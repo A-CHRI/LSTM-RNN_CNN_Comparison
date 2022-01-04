@@ -3,18 +3,19 @@ import torch
 # import matplotlib.pyplot as plt
 
 # Initial parameters
-max_input_neurons = 72
+max_input_neurons = 7 #72
 max_output_neurons = 2
 max_hidden_layers = 2
-max_hidden_neurons = 60
+max_hidden_neurons = 16 #60
 max_training_sets = 400
 learning_rate = 0.01
 max_rounds = 5000 #00
 
-# Initialize the tensors
-#
-#
-#
+# Initialize the tensors from data file
+data = np.loadtxt('data-VOO.csv', delimiter=',')
+inp = torch.from_numpy(data[4, 0:max_input_neurons])
+outp = torch.tensor([1 if data[4, max_input_neurons + 1] > inp[-1] else 0, 1 if data[4, max_input_neurons + 1] < inp[-1] else 0])
+
 
 # Initialize the network
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -36,10 +37,10 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 # Train the network
 for i in range(max_rounds):
     # Forward pass
-    y_pred = model(x)
+    y_pred = model(inp)
 
     # Compute and print loss
-    loss = loss_fn(y_pred, y)
+    loss = loss_fn(y_pred, outp)
     print(f'Loss: {loss.item()}')
     # Loss[i] = loss.item()
 
