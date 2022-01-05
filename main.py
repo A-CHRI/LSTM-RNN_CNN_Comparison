@@ -14,7 +14,14 @@ max_rounds = 500 #500000
 
 
 # Initialize the tensors from data file
-data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5) )
+data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5))
+
+trainingsets = []
+
+for i in range(max_training_sets):
+    x = data[max_input_neurons*i:max_input_neurons*(i+1), 0]
+    y = np.array([1 if data[max_input_neurons*(i+1) + 1][0] > x[-1] else 0, 1 if data[max_input_neurons*(i+1) + 1][0] < x[-1] else 0])
+    trainingsets.append([x, y])
 
 x = data[0:max_input_neurons, 0]
 print(x)
