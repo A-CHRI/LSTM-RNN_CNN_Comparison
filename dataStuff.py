@@ -16,13 +16,15 @@ max_rounds = 5000 #00
 data = np.loadtxt('data-VOO.csv', delimiter=',')
 fulldata = data.copy()
 
+trainingsets = np.array([])
+
 for i in max_training_sets:
     x = data[4, 0:max_input_neurons]
     y = [1 if data[4, max_input_neurons + 1] > x[-1] else 0, 1 if data[4, max_input_neurons + 1] < x[-1] else 0]
+    trainingsets = np.append(trainingsets, np.array([x, y]))
 
     for i in max_input_neurons:
         data = np.delete(data, (0), axis=0)
 
-    inp = torch.from_numpy(x)
-    outp = torch.tensor(y)
+
 
