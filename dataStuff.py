@@ -16,14 +16,14 @@ max_rounds = 5000 #00
 data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5) )
 fulldata = data.copy()
 
-trainingsets = np.array([])
+trainingsets = []
 print(data)
 
 
 for i in range(max_training_sets):
-    x = data[0, 0:max_input_neurons]
+    x = data[0:max_input_neurons, 0]
     y = np.array([1 if data[max_input_neurons + 1][0] > x[-1] else 0, 1 if data[max_input_neurons + 1][0] < x[-1] else 0])
-    trainingsets = np.append(trainingsets, np.array([x, y]), axis=0)
+    trainingsets.append([x, y])
 
     for i in range(max_input_neurons):
         data = np.delete(data, (0), axis=0)
