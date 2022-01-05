@@ -1,3 +1,4 @@
+from multiprocessing import Condition
 import numpy as np
 import torch
 from torch import nn
@@ -18,9 +19,9 @@ data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5
 
 trainingsets = []
 
-for i in range(max_training_sets):
-    x = data[max_input_neurons*i:max_input_neurons*(i+1), 0]
-    y = np.array([1 if data[max_input_neurons*(i+1) + 1][0] > x[-1] else 0, 1 if data[max_input_neurons*(i+1) + 1][0] < x[-1] else 0])
+while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_input_neurons) < len(data):
+    x = data[max_input_neurons*len(trainingsets):max_input_neurons*(len(trainingsets)+1), 0]
+    y = np.array([1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] > x[-1] else 0, 1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] < x[-1] else 0])
     trainingsets.append([x, y])
 
 x = data[0:max_input_neurons, 0]
