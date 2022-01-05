@@ -10,7 +10,7 @@ max_hidden_layers = 2
 max_hidden_neurons = 16 #60
 max_training_sets = 400
 learning_rate = 0.01
-max_rounds = 500 #000
+max_rounds = 500 #500000
 
 
 # Initialize the tensors from data file
