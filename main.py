@@ -11,7 +11,7 @@ max_hidden_layers = 2
 max_hidden_neurons = 16 #60
 max_training_sets = 400
 learning_rate = 0.01
-max_rounds = 50 #500000
+max_rounds = 2500 #500000
 
 
 # Initialize the tensors from data file
@@ -43,7 +43,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 Loss = np.zeros(max_rounds)
 
 # Train the network
-for i in range(len(trainingsets)):
+weeks = len(trainingsets)
+for i in range(weeks):
     # Initialize the tensors
     x = trainingsets[i][0]
     inp = torch.tensor(x).double()
@@ -57,7 +58,7 @@ for i in range(len(trainingsets)):
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Week: {i}, Day:{j}, Loss: {loss.item()}')
+        print(f'Done: {int((100/weeks) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
         Loss[j] = loss.item()
 
         # Zero gradients, perform a backward pass, and update the weights.
