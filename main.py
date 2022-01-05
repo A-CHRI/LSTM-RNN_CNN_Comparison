@@ -14,7 +14,6 @@ learning_rate = 0.01
 max_rounds = 50 #500000
 
 
-
 # Initialize training data from data file
 training_dataImport = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 training_data = np.copy(training_dataImport)
