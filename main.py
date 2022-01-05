@@ -11,11 +11,12 @@ max_hidden_layers = 2
 max_hidden_neurons = 16 #60
 max_training_sets = 400
 learning_rate = 0.01
-max_rounds = 500 #500000
+max_rounds = 50 #500000
 
 
 # Initialize the tensors from data file
-data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5))
+dataImport = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+data = np.copy(dataImport)
 
 trainingsets = []
 
@@ -23,15 +24,6 @@ while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_inp
     x = data[max_input_neurons*len(trainingsets):max_input_neurons*(len(trainingsets)+1), 0]
     y = np.array([1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] > x[-1] else 0, 1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] < x[-1] else 0])
     trainingsets.append([x, y])
-
-x = data[0:max_input_neurons, 0]
-print(x)
-inp = torch.tensor(x).double()
-
-y = np.array([1 if data[max_input_neurons + 1][0] > x[-1] else 0, 1 if data[max_input_neurons + 1][0] < x[-1] else 0])
-print(y)
-outp = torch.tensor(y).double()
-
 
 # Initialize the network
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -51,19 +43,27 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 Loss = np.zeros(max_rounds)
 
 # Train the network
-for i in range(max_rounds):
-    # Forward pass
-    y_pred = model(inp)
+for i in range(len(trainingsets)):
+    # Initialize the tensors
+    x = trainingsets[i][0]
+    inp = torch.tensor(x).double()
 
-    # Compute and print loss
-    loss = loss_fn(y_pred, outp)
-    print(f'{i} Loss: {loss.item()}')
-    Loss[i] = loss.item()
+    y = trainingsets[i][1]
+    outp = torch.tensor(y).double()
 
-    # Zero gradients, perform a backward pass, and update the weights.
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+    for j in range(max_rounds):
+        # Forward pass
+        y_pred = model(inp)
+
+        # Compute and print loss
+        loss = loss_fn(y_pred, outp)
+        print(f'Week: {i}, Day:{j}, Loss: {loss.item()}')
+        Loss[j] = loss.item()
+
+        # Zero gradients, perform a backward pass, and update the weights.
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
 
 # Plot the loss function
 plt.plot(Loss)

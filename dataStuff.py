@@ -14,7 +14,7 @@ max_rounds = 5000 #00
 
 # Initialize the tensors from data file
 data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5) )
-fulldata = data.copy()
+data = data[::-1]
 
 trainingsets = []
 print(data)
