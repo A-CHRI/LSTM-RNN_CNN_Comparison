@@ -13,7 +13,7 @@ max_rounds = 5000 #00
 
 
 # Initialize the tensors from data file
-training_dataImport = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+training_dataImport = np.loadtxt('data-AMD.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 training_data = np.copy(training_dataImport)
 
 trainingsets = []

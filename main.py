@@ -77,6 +77,31 @@ for i in range(weeks):
         loss.backward()
         optimizer.step()
 
+weeks = len(testsets)
+Losstest = np.zeros(max_rounds * len(test_data))
+for i in range(weeks):
+    # Initialize the tensors
+    x = testsets[i][0]
+    inp = torch.tensor(x).double()
+
+    y = testsets[i][1]
+    outp = torch.tensor(y).double()
+
+    for j in range(max_rounds):
+        # Forward pass
+        y_pred = model(inp)
+
+        # Compute and print loss
+        loss = loss_fn(y_pred, outp)
+        print(f'Done: {int((100/weeks) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
+        Losstest[j*(i+1)] = loss.item()
+
+wrong = 0
+for e in Losstest:
+    if e > 0.5:
+        wrong = wrong + 1
+print(str(wrong/len(Losstest)))
+
 # Plot the loss function
 plt.plot(Loss)
 plt.grid(True)
