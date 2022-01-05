@@ -27,4 +27,4 @@ for i in max_training_sets:
         data = np.delete(data, (0), axis=0)
 
 
-
+print(trainingsets)
