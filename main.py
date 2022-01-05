@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from torch import nn
 import matplotlib.pyplot as plt
 
 # Initial parameters
@@ -24,17 +25,18 @@ outp = torch.tensor(y)
 
 # Initialize the network
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-model = torch.nn.Sequential(
-    torch.nn.Linear(max_input_neurons, max_hidden_neurons),
-    torch.nn.ReLU(),
-    torch.nn.Linear(max_hidden_neurons, max_hidden_neurons),
-    torch.nn.ReLU(),
-    torch.nn.Linear(max_hidden_neurons, max_hidden_neurons),
-    torch.nn.ReLU(),
-    torch.nn.Linear(max_hidden_neurons, max_output_neurons),
+model = nn.Sequential(
+    nn.Flatten(),
+    nn.Linear(max_input_neurons, max_hidden_neurons),
+    nn.ReLU(),
+    nn.Linear(max_hidden_neurons, max_hidden_neurons),
+    nn.ReLU(),
+    nn.Linear(max_hidden_neurons, max_hidden_neurons),
+    nn.ReLU(),
+    nn.Linear(max_hidden_neurons, max_output_neurons),
 )
 model.to(device)
-loss_fn = torch.nn.MSELoss(reduction='sum')
+loss_fn = nn.MSELoss(reduction='sum')
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 Loss = np.zeros(max_rounds)
