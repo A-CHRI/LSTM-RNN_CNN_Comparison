@@ -26,7 +26,7 @@ while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_inp
     trainingsets.append([x, y])
 
 # Initialize test data from data file
-dataImport2 = np.loadtxt('AMD.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+dataImport2 = np.loadtxt('data-AMD.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 data2 = np.copy(dataImport)
 
 testsets = []
