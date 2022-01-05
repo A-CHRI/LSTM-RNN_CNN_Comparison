@@ -14,7 +14,7 @@ learning_rate = 0.01
 max_rounds = 2500 #500000
 
 
-# Initialize the tensors from data file
+# Initialize training data from data file
 dataImport = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 data = np.copy(dataImport)
 
@@ -24,6 +24,17 @@ while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_inp
     x = data[max_input_neurons*len(trainingsets):max_input_neurons*(len(trainingsets)+1), 0]
     y = np.array([1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] > x[-1] else 0, 1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] < x[-1] else 0])
     trainingsets.append([x, y])
+
+# Initialize test data from data file
+dataImport2 = np.loadtxt('AMD.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+data2 = np.copy(dataImport)
+
+testsets = []
+
+while len(testsets) < max_training_sets and (len(testsets) + 1)*(max_input_neurons) < len(data2):
+    x = data2[max_input_neurons*len(testsets):max_input_neurons*(len(testsets)+1), 0]
+    y = np.array([1 if data2[max_input_neurons*(len(testsets)+1) + 1][0] > x[-1] else 0, 1 if data2[max_input_neurons*(len(testsets)+1) + 1][0] < x[-1] else 0])
+    testsets.append([x, y])
 
 # Initialize the network
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
