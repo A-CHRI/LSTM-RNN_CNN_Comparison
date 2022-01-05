@@ -15,10 +15,10 @@ max_rounds = 5000 #00
 # Initialize the tensors from data file
 data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5) )
 
-x = data[4, 0:max_input_neurons]
+x = data[0, 0:max_input_neurons]
 inp = torch.tensor(x)
 
-y = [1 if data[4, max_input_neurons + 1] > inp[-1] else 0, 1 if data[4, max_input_neurons + 1] < inp[-1] else 0]
+y = [1 if data[0, max_input_neurons + 1] > inp[-1] else 0, 1 if data[0, max_input_neurons + 1] < inp[-1] else 0]
 outp = torch.tensor(y)
 
 
