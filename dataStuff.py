@@ -21,12 +21,9 @@ print(data)
 
 
 for i in range(max_training_sets):
-    x = data[0:max_input_neurons, 0]
-    y = np.array([1 if data[max_input_neurons + 1][0] > x[-1] else 0, 1 if data[max_input_neurons + 1][0] < x[-1] else 0])
+    x = data[max_input_neurons*i:max_input_neurons*(i+1), 0]
+    y = np.array([1 if data[max_input_neurons*(i+1) + 1][0] > x[-1] else 0, 1 if data[max_input_neurons*(i+1) + 1][0] < x[-1] else 0])
     trainingsets.append([x, y])
-
-    for i in range(max_input_neurons):
-        data = np.delete(data, (0), axis=0)
 
 
 print(trainingsets)
