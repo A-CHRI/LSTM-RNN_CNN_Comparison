@@ -11,7 +11,7 @@ max_hidden_layers = 2
 max_hidden_neurons = 16 #60
 max_training_sets = 400
 learning_rate = 0.01
-max_rounds = 2500 #500000
+max_rounds = 50 #500000
 
 
 # Initialize training data from data file
@@ -22,7 +22,7 @@ trainingsets = []
 
 while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_input_neurons) < len(training_data):
     x = training_data[max_input_neurons*len(trainingsets):max_input_neurons*(len(trainingsets)+1), 0]
-    y = np.array([1 if training_data[max_input_neurons*(len(trainingsets)+1) + 1][0] > x[-1] else 0, 1 if training_data[max_input_neurons*(len(trainingsets)+1) + 1][0] < x[-1] else 0])
+    y = np.array([1 if np.mean(training_data[max_input_neurons*(len(trainingsets)+1):max_input_neurons*(len(trainingsets)+2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(training_data[max_input_neurons*(len(trainingsets)+1):max_input_neurons*(len(trainingsets)+2) + 1][0]) < np.mean(x) else 0])
     trainingsets.append([x, y])
 
 # Initialize test data from data file

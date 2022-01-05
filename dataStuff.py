@@ -13,15 +13,14 @@ max_rounds = 5000 #00
 
 
 # Initialize the tensors from data file
-data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols= (1,2,3,4,5) )
-data = data[::-1]
+training_dataImport = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+training_data = np.copy(training_dataImport)
 
 trainingsets = []
-print(data)
 
-while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_input_neurons) < len(data):
-    x = data[max_input_neurons*len(trainingsets):max_input_neurons*(len(trainingsets)+1), 0]
-    y = np.array([1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] > x[-1] else 0, 1 if data[max_input_neurons*(len(trainingsets)+1) + 1][0] < x[-1] else 0])
+while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_input_neurons) < len(training_data):
+    x = training_data[max_input_neurons*len(trainingsets):max_input_neurons*(len(trainingsets)+1), 0]
+    y = np.array([1 if np.mean(training_data[max_input_neurons*(len(trainingsets)+1):max_input_neurons*(len(trainingsets)+2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(training_data[max_input_neurons*(len(trainingsets)+1):max_input_neurons*(len(trainingsets)+2) + 1][0]) < np.mean(x) else 0])
     trainingsets.append([x, y])
 
 print(trainingsets)
