@@ -33,7 +33,7 @@ while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_
     trainingsets.append([x, y])
 
 # Initialize test data from data file
-test_dataImport = np.loadtxt('data-AMD.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 test_data = np.copy(test_dataImport)
 
 
@@ -100,15 +100,10 @@ for i in range(weeks_test):
     y = testsets[i][1]
     outp = torch.tensor(y).double()
 
-    for j in range(max_rounds):
-        # Forward pass
-        y_pred = model(inp)
-        y_plot_pred = np.append(y_plot_pred, y_pred.detach().numpy())
-
-        # Compute and print loss
-        loss = loss_fn(y_pred, outp)
-        print(f'Done: {int((100/weeks_test) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
-        Losstest[j*(i+1)] = loss.item()
+    # Compute and print loss
+    loss = loss_fn(y_pred, outp)
+    print(f'Done: {int((100/weeks) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
+    Losstest[j*(i+1)] = loss.item()
 
 wrong = 0
 for e in Losstest:
