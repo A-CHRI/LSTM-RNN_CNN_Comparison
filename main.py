@@ -101,6 +101,7 @@ for i in range(weeks_test):
     outp = torch.tensor(y).double()
 
     y_pred = model(inp)
+    y_plot_pred = np.append(y_plot_pred, y_pred.detach().numpy()[0])
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
@@ -125,7 +126,8 @@ y_plot_test = np.array(test_data[0])
 plt.plot(x_plot_test, y_plot_test, label='AMD daily close price')
 
 # Prediction data
-plt.plot(weeks_test, y_plot_pred, label='Prediction')
+x_plot_pred = np.arange(len(testsets))
+plt.plot(x_plot_pred, y_plot_pred, label='Prediction')
 
 # Plotting
 plt.grid(True)
