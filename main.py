@@ -13,9 +13,13 @@ max_training_sets = 400
 learning_rate = 0.01
 max_rounds = 50 #500000
 
+# Filenames
+training_file = "data-VOO.csv"
+test_file = "data-AMD.csv"
+
 
 # Initialize training data from data file
-training_dataImport = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+training_dataImport = np.loadtxt(training_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 training_data = np.copy(training_dataImport)
 
 trainingsets = []
@@ -26,7 +30,7 @@ while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (max_i
     trainingsets.append([x, y])
 
 # Initialize test data from data file
-test_dataImport = np.loadtxt('data-AMD.csv', delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 test_data = np.copy(training_dataImport)
 
 testsets = []
