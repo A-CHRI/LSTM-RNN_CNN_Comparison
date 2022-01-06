@@ -135,18 +135,18 @@ losspercent/len(predtest)
 print(losspercent)
 print(y_plot_pred)
 
-
-## Set up plot for the data
+### Plotting ###
+# Set up plot for the data
 fig, (loss_plot, network_plot) = plt.subplots(2, 1)
 fig.suptitle('Loss and Network Output')
 
-# Plot the loss function
+# Set up the loss plot
 loss_plot.set_ylabel("Loss function")
 loss_plot.plot(Loss, label="Loss function")
 loss_plot.legend()
 loss_plot.grid(True)
 
-# AMD data
+# set up the test plot
 network_plot.set_ylabel("Neural network test")
 x_plot_test = np.arange(len(test_data[0]))
 y_plot_test = np.array(test_data[0])
