@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # Initial parameters
 max_output_neurons = 2
 max_hidden_layers = 2
-max_hidden_neurons = 200 #60
+max_hidden_neurons = 8 #60
 max_training_sets = 400
 learning_rate = 0.01
 max_rounds = 50 #500000
@@ -16,7 +16,7 @@ max_input_neurons = days_per_segment*5
 
 # Filenames
 training_file = "data-VOO.csv"
-test_file = "data-AMD.csv"
+test_file = "data-GME.csv"
 
 
 # Initialize training data from data file
@@ -25,12 +25,12 @@ training_data = np.copy(training_dataImport)
 
 trainingsets = []
 
-while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (max_input_neurons) < len(training_data):
+while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data):
     x = np.zeros(5*days_per_segment)
     for i in range(5):
         for j in range(days_per_segment):
             x[i*days_per_segment+j] = training_data[days_per_segment * len(trainingsets)+j, i]
-    y = np.array([1 if np.mean(training_data[max_input_neurons * (len(trainingsets) + 1): max_input_neurons * (len(trainingsets) + 2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(training_data[max_input_neurons*(len(trainingsets) + 1): max_input_neurons * (len(trainingsets) + 2) + 1][0]) < np.mean(x) else 0])
+    y = np.array([1 if np.mean(training_data[days_per_segment * (len(trainingsets) + 1): days_per_segment * (len(trainingsets) + 2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(training_data[days_per_segment*(len(trainingsets) + 1): days_per_segment * (len(trainingsets) + 2) + 1][0]) < np.mean(x) else 0])
     trainingsets.append([x, y])
 
 # Initialize test data from data file
@@ -40,12 +40,12 @@ test_data = np.copy(test_dataImport)
 
 testsets = []
 
-while len(testsets) < max_training_sets and (len(testsets) + 1) * (max_input_neurons) < len(test_data):
+while len(testsets) < max_training_sets and (len(testsets) + 2) * (days_per_segment) < len(test_data):
     x = np.zeros(5*days_per_segment)
     for i in range(5):
         for j in range(days_per_segment):
-            x[i*days_per_segment+j] = test_data[max_input_neurons * len(testsets) + j, i]
-    y = np.array([1 if test_data[max_input_neurons * (len(testsets) + 1) + 1][0] > x[-1] else 0, 1 if test_data[max_input_neurons * (len(testsets) + 1) + 1][0] < x[-1] else 0])
+            x[i*days_per_segment+j] = test_data[days_per_segment * len(testsets) + j, i]
+    y = np.array([1 if np.mean(test_data[days_per_segment * (len(testsets) + 1): days_per_segment * (len(testsets) + 2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(test_data[days_per_segment*(len(testsets) + 1): days_per_segment * (len(testsets) + 2) + 1][0]) < np.mean(x) else 0])
     testsets.append([x, y])
 
 # Initialize the network
@@ -111,7 +111,7 @@ for i in range(weeks):
 
 wrong = 0
 for e in Losstest:
-    if e > 0.5:
+    if e > 0.15:
         wrong = wrong + 1
 print(str(wrong/len(Losstest)))
 
