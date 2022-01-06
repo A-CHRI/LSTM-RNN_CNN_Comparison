@@ -4,37 +4,33 @@ from torch import nn
 import matplotlib.pyplot as plt
 
 # Initial parameters
-max_output_neurons = 1
-max_hidden_layers = 2
-max_hidden_neurons = 60 #60
-max_training_sets = 400
+output_neurons = 1
+hidden_layers = 2
+hidden_neurons = 16 #60
+training_sets = 400
 learning_rate = 0.01
-max_rounds = 500 #500000
+iterations = 50 #500000
 days_per_segment = 7
-max_input_neurons = days_per_segment*5
+input_neurons = days_per_segment*5
 
 # Filenames
 training_files = ["data-VOO.csv", "data-AMD.csv"]
 test_file = "data-GME.csv"
 
+# Print the parameter info
+print("\n Training on: " + str(training_files) + "\n Testing on: " + str(test_file))
+print("\n Input neurons: " + str(input_neurons) + "\n Output neurons: " + str(output_neurons) + "\n Hidden layers: " + str(hidden_layers) + "\n Hidden neurons: " + str(hidden_neurons))
+print("\n Max training sets: " + str(training_sets) + "\n Learning rate: " + str(learning_rate) + "\n Iterations: " + str(iterations) + "\n Days per segment: " + str(days_per_segment))
+print("\n Device:" + str("CUDA" if torch.cuda.is_available() else "CPU"))
+input("\n Press enter to continue...")
 
 # Initialize training data from data files
+print("Initializing training data...")
 trainingsets = []
 for i in training_files:
     size = 0
     training_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     training_data = np.copy(np.transpose(training_dataImport))
-
-    #while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data[0]):
-    # for l in range( len(training_data[0] - (days_per_segment + 1)) ):
-    #     x = np.zeros(5 * days_per_segment)
-    #     for j in range(5):
-    #         for k in range(days_per_segment):
-    #             x[j * days_per_segment + k] = training_data[j, days_per_segment * size + k]
-    #     y = training_data[0, days_per_segment * size + 1]
-    #     trainingsets.append([x, y])
-    #     print([x,y])
-    #     size += 1
 
     for l in range (len(training_data[0]) - (days_per_segment + 1)):
         # Calculate x segment
@@ -46,14 +42,14 @@ for i in training_files:
         y = training_data[0, l + days_per_segment]
         trainingsets.append([x, y])
 
+print("Initializing test data...")
 # Initialize test data from data file
 test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 test_data = np.copy(np.transpose(test_dataImport))
 
-
 testsets = []
 
-while len(testsets) < max_training_sets and (len(testsets) + 2) * (days_per_segment) < len(test_data[0]):
+while len(testsets) < training_sets and (len(testsets) + 2) * (days_per_segment) < len(test_data[0]):
     x = np.zeros(5*days_per_segment)
     for i in range(5):
         for j in range(days_per_segment):
@@ -62,21 +58,22 @@ while len(testsets) < max_training_sets and (len(testsets) + 2) * (days_per_segm
     testsets.append([x, y])
 
 # Initialize the network
+print("Initializing network...")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = nn.Sequential(
-    nn.Linear(max_input_neurons, max_hidden_neurons),
+    nn.Linear(input_neurons, hidden_neurons),
     nn.ReLU(),
-    nn.Linear(max_hidden_neurons, max_hidden_neurons),
+    nn.Linear(hidden_neurons, hidden_neurons),
     nn.ReLU(),
-    nn.Linear(max_hidden_neurons, max_hidden_neurons),
+    nn.Linear(hidden_neurons, hidden_neurons),
     nn.ReLU(),
-    nn.Linear(max_hidden_neurons, max_output_neurons),
+    nn.Linear(hidden_neurons, output_neurons),
 ).double()
 model.to(device)
 loss_fn = nn.MSELoss(reduction='sum')
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-Loss = np.zeros(max_rounds * len(trainingsets))
+Loss = np.zeros(iterations * len(trainingsets))
 
 
 # Train the network
@@ -90,7 +87,7 @@ for i in range(segments_train):
     y = trainingsets[i][1]
     outp = torch.tensor(y).double()
 
-    for j in range(max_rounds):
+    for j in range(iterations):
         # Forward pass
         y_pred = model(inp)
 
