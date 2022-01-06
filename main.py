@@ -14,23 +14,23 @@ days_per_segment = 7
 max_input_neurons = days_per_segment*5
 
 # Filenames
-training_file = "data-VOO.csv"
+training_files = ["data-VOO.csv", "data-AMD.csv"]
 test_file = "data-GME.csv"
 
 
 # Initialize training data from data file
-training_dataImport = np.loadtxt(training_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
-training_data = np.copy(np.transpose(training_dataImport))
-
 trainingsets = []
+for i in training_files:
+    training_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+    training_data = np.copy(np.transpose(training_dataImport))
 
-while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data[0]):
-    x = np.zeros(5*days_per_segment)
-    for i in range(5):
-        for j in range(days_per_segment):
-            x[i*days_per_segment+j] = training_data[i, days_per_segment * len(trainingsets)+j]
-    y = training_data[0, days_per_segment * len(trainingsets)+1]
-    trainingsets.append([x, y])
+    while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data[0]):
+        x = np.zeros(5*days_per_segment)
+        for i in range(5):
+            for j in range(days_per_segment):
+                x[i*days_per_segment+j] = training_data[i, days_per_segment * len(trainingsets)+j]
+        y = training_data[0, days_per_segment * len(trainingsets)+1]
+        trainingsets.append([x, y])
 
 # Initialize test data from data file
 test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
