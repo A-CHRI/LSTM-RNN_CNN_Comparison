@@ -90,7 +90,7 @@ for i in range(weeks_train):
 
 # Test the network
 weeks_test = len(testsets)
-Losstest = np.zeros(max_rounds * len(test_data))
+Losstest = np.zeros(len(test_data))
 y_plot_pred = np.array([])
 for i in range(weeks_test):
     # Initialize the tensors
@@ -100,10 +100,12 @@ for i in range(weeks_test):
     y = testsets[i][1]
     outp = torch.tensor(y).double()
 
+    y_pred = model(inp)
+
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
-    print(f'Done: {int((100/weeks) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
-    Losstest[j*(i+1)] = loss.item()
+    print(f'Done: {int((100/weeks_test) * i)}%, Week: {i}, Loss: {loss.item()}')
+    Losstest[i] = loss.item()
 
 wrong = 0
 for e in Losstest:
