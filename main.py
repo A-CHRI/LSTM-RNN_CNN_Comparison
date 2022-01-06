@@ -82,9 +82,9 @@ Loss = np.zeros(iterations * len(training_sets))
 
 
 # Train the network
-print("Training the network...")
-segments_train = len(training_sets)
-for i in range(segments_train):
+print("Training the network... \n - " + str(len(training_sets)) + " segments to train on.")
+training_segments = len(training_sets)
+for i in range(training_segments):
     # Initialize the tensors
     x = training_sets[i][0]
     inp = torch.tensor(x).double()
@@ -98,7 +98,7 @@ for i in range(segments_train):
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Done: {int((100/segments_train) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
+        print(f'Done: {int((100/training_segments) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
         Loss[j*(i+1)] = loss.item()
 
         # Zero gradients, perform a backward pass, and update the weights.
@@ -107,11 +107,11 @@ for i in range(segments_train):
         optimizer.step()
 
 # Test the network
-print("Testing the network...")
-segments_test = len(test_sets)
+print("Testing the network... \n - " + str(len(test_sets)) + " segments to test.")
+test_segments = len(test_sets)
 predtest = np.zeros(len(test_sets))
 y_plot_pred = np.array([])
-for i in range(segments_test):
+for i in range(test_segments):
     # Initialize the tensors
     x = test_sets[i][0]
     inp = torch.tensor(x).double()
@@ -124,7 +124,7 @@ for i in range(segments_test):
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
-    print(f'Done: {int((100/segments_test) * i)}%, Week: {i}, Loss: {loss.item()}')
+    print(f'Done: {int((100/test_segments) * i)}%, Week: {i}, Loss: {loss.item()}')
     predtest[i] = loss.item()
 
 losspercent = 0
