@@ -9,7 +9,7 @@ max_hidden_layers = 2
 max_hidden_neurons = 60 #60
 max_training_sets = 400
 learning_rate = 0.01
-max_rounds = 500 #500000
+max_rounds = 50 #500000
 days_per_segment = 7
 max_input_neurons = days_per_segment*5
 
@@ -131,6 +131,8 @@ for i, e in enumerate(predtest):
 
 losspercent/len(predtest)
 print(losspercent)
+print(y_plot_pred)
+
 
 # Plot the loss function
 plt.plot(Loss)
