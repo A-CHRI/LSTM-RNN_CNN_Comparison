@@ -26,7 +26,7 @@ input("\n Press enter to continue...")
 
 # Initialize training data from data files
 print("Initializing training data...")
-trainingsets = []
+training_sets = []
 for i in training_files:
     training_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     training_data = np.copy(np.transpose(training_dataImport))
@@ -39,14 +39,14 @@ for i in training_files:
                 x[j * days_per_segment + k] = training_data[j, k + l]
         # Calculate y segment
         y = training_data[0, l + days_per_segment]
-        trainingsets.append([x, y])
+        training_sets.append([x, y])
 
 print("Initializing test data...")
 # Initialize test data from data file
 test_dataImport = np.loadtxt(test_files, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 test_data = np.copy(np.transpose(test_dataImport))
 
-testsets = []
+test_sets = []
 
 for i in test_files:
     test_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
@@ -59,7 +59,7 @@ for i in test_files:
                 x[j * days_per_segment + k] = test_data[j, k + l]
         # Calculate y segment
         y = test_data[0, l + days_per_segment]
-        testsets.append([x, y])
+        test_sets.append([x, y])
 
 
 # Initialize the network
@@ -78,18 +78,18 @@ model.to(device)
 loss_fn = nn.MSELoss(reduction='sum')
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-Loss = np.zeros(iterations * len(trainingsets))
+Loss = np.zeros(iterations * len(training_sets))
 
 
 # Train the network
 print("Training the network...")
-segments_train = len(trainingsets)
+segments_train = len(training_sets)
 for i in range(segments_train):
     # Initialize the tensors
-    x = trainingsets[i][0]
+    x = training_sets[i][0]
     inp = torch.tensor(x).double()
 
-    y = trainingsets[i][1]
+    y = training_sets[i][1]
     outp = torch.tensor(y).double()
 
     for j in range(iterations):
@@ -108,19 +108,19 @@ for i in range(segments_train):
 
 # Test the network
 print("Testing the network...")
-segments_test = len(testsets)
-predtest = np.zeros(len(testsets))
+segments_test = len(test_sets)
+predtest = np.zeros(len(test_sets))
 y_plot_pred = np.array([])
 for i in range(segments_test):
     # Initialize the tensors
-    x = testsets[i][0]
+    x = test_sets[i][0]
     inp = torch.tensor(x).double()
 
-    y = testsets[i][1]
+    y = test_sets[i][1]
     outp = torch.tensor(y).double()
 
     y_pred = model(inp)
-    y_plot_pred = np.append(y_plot_pred, y_pred.detach().numpy()[0])
+    y_plot_pred = np.append(y_plot_pred, y_pred.detach().numpy())
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
@@ -129,11 +129,10 @@ for i in range(segments_test):
 
 losspercent = 0
 for i, e in enumerate(predtest):
-    losspercent = losspercent + (testsets[i][1]-e)/testsets[i][1]
+    losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
 
-losspercent/len(predtest)
+losspercent = losspercent/len(predtest)
 print(losspercent)
-print(y_plot_pred)
 
 ### Plotting ###
 # Set up plot for the data
@@ -153,7 +152,7 @@ y_plot_test = np.array(test_data[0])
 network_plot.plot(x_plot_test, y_plot_test, label='Test files daily closing price')
 
 # Prediction data
-x_plot_pred = np.arange(len(testsets)) * days_per_segment
+x_plot_pred = np.arange(len(test_sets)) * days_per_segment
 network_plot.plot(x_plot_pred, y_plot_pred, label='Prediction')
 
 # Plotting
