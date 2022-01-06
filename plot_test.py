@@ -12,7 +12,7 @@ training_data = np.copy(training_dataImport)
 
 # Initialize test data from data file
 test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
-test_data = np.copy(training_dataImport)
+test_data = np.copy(test_dataImport)
 
 print(test_data)
 
