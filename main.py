@@ -91,7 +91,7 @@ for i in range(weeks_train):
 
 # Test the network
 weeks_test = len(testsets)
-Losstest = np.zeros(len(testsets))
+predtest = np.zeros(len(testsets))
 y_plot_pred = np.array([])
 for i in range(weeks_test):
     # Initialize the tensors
@@ -107,13 +107,14 @@ for i in range(weeks_test):
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
     print(f'Done: {int((100/weeks_test) * i)}%, Week: {i}, Loss: {loss.item()}')
-    Losstest[i] = loss.item()
+    predtest[i] = loss.item()
 
-wrong = 0
-for e in Losstest:
-    if e > 0.15:
-        wrong = wrong + 1
-print(str(wrong/len(Losstest)))
+losspercent = 0
+for i, e in enumerate(predtest):
+    losspercent = losspercent + (testsets[i][1]-e)/testsets[i][1]
+
+losspercent/len(predtest)
+print(losspercent)
 
 # Plot the loss function
 plt.plot(Loss)
