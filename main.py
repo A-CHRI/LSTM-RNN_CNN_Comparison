@@ -44,6 +44,7 @@ for i in training_files:
                 x[j * days_per_segment + k] = training_data[j, k + l]
         # Calculate y segment
         y = training_data[0, l + days_per_segment]
+        trainingsets.append([x, y])
 
 # Initialize test data from data file
 test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
@@ -76,6 +77,7 @@ loss_fn = nn.MSELoss(reduction='sum')
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 Loss = np.zeros(max_rounds * len(trainingsets))
+
 
 # Train the network
 print("Training the network...")
