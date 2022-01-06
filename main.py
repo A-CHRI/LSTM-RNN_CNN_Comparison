@@ -18,20 +18,32 @@ training_files = ["data-VOO.csv", "data-AMD.csv"]
 test_file = "data-GME.csv"
 
 
-# Initialize training data from data file
+# Initialize training data from data files
 trainingsets = []
 for i in training_files:
+    size = 0
     training_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     training_data = np.copy(np.transpose(training_dataImport))
 
     #while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data[0]):
-    for l in range(len(training_data[0] // days_per_segment)):
-        x = np.zeros(5*days_per_segment)
+    # for l in range( len(training_data[0] - (days_per_segment + 1)) ):
+    #     x = np.zeros(5 * days_per_segment)
+    #     for j in range(5):
+    #         for k in range(days_per_segment):
+    #             x[j * days_per_segment + k] = training_data[j, days_per_segment * size + k]
+    #     y = training_data[0, days_per_segment * size + 1]
+    #     trainingsets.append([x, y])
+    #     print([x,y])
+    #     size += 1
+
+    for l in range (len(training_data[0]) - (days_per_segment + 1)):
+        # Calculate x segment
+        x = np.zeros(5 * days_per_segment)
         for j in range(5):
             for k in range(days_per_segment):
-                x[j * days_per_segment + k] = training_data[j, days_per_segment * len(trainingsets) + k]
-        y = training_data[0, days_per_segment * len(trainingsets) + 1]
-        trainingsets.append([x, y])
+                x[j * days_per_segment + k] = training_data[j, k + l]
+        # Calculate y segment
+        y = training_data[0, l + days_per_segment]
 
 # Initialize test data from data file
 test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
