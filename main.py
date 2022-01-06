@@ -11,16 +11,13 @@ max_hidden_neurons = 200 #60
 max_training_sets = 400
 learning_rate = 0.01
 max_rounds = 50 #500000
-<<<<<<< HEAD
 days_per_segment = 7
 max_input_neurons = days_per_segment*5
-=======
 
 # Filenames
 training_file = "data-VOO.csv"
 test_file = "data-AMD.csv"
 
->>>>>>> 1ef55c18a371954735a8cdcc46d7164f5c3c9af8
 
 # Initialize training data from data file
 training_dataImport = np.loadtxt(training_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
