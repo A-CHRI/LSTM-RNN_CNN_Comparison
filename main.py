@@ -66,8 +66,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 Loss = np.zeros(max_rounds * len(trainingsets))
 
 # Train the network
-weeks = len(trainingsets)
-for i in range(weeks):
+weeks_train = len(trainingsets)
+for i in range(weeks_train):
     # Initialize the tensors
     x = trainingsets[i][0]
     inp = torch.tensor(x).double()
@@ -81,7 +81,7 @@ for i in range(weeks):
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Done: {int((100/weeks) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
+        print(f'Done: {int((100/weeks_train) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
         Loss[j*(i+1)] = loss.item()
 
         # Zero gradients, perform a backward pass, and update the weights.
@@ -90,9 +90,10 @@ for i in range(weeks):
         optimizer.step()
 
 # Test the network
-weeks = len(testsets)
+weeks_test = len(testsets)
 Losstest = np.zeros(max_rounds * len(test_data))
-for i in range(weeks):
+y_plot_pred = np.array([])
+for i in range(weeks_test):
     # Initialize the tensors
     x = testsets[i][0]
     inp = torch.tensor(x).double()
@@ -103,10 +104,11 @@ for i in range(weeks):
     for j in range(max_rounds):
         # Forward pass
         y_pred = model(inp)
+        y_plot_pred = np.append(y_plot_pred, y_pred.detach().numpy())
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Done: {int((100/weeks) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
+        print(f'Done: {int((100/weeks_test) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
         Losstest[j*(i+1)] = loss.item()
 
 wrong = 0
@@ -118,4 +120,18 @@ print(str(wrong/len(Losstest)))
 # Plot the loss function
 plt.plot(Loss)
 plt.grid(True)
+plt.show()
+
+## Set up plot for the data
+# AMD data
+x_plot_test = np.arange(len(test_data[0]))
+y_plot_test = np.array(test_data[0])
+plt.plot(x_plot_test, y_plot_test, label='AMD daily close price')
+
+# Prediction data
+plt.plot(weeks_test, y_plot_pred, label='Prediction')
+
+# Plotting
+plt.grid(True)
+plt.legend()
 plt.show()
