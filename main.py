@@ -24,12 +24,13 @@ for i in training_files:
     training_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     training_data = np.copy(np.transpose(training_dataImport))
 
-    while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data[0]):
+    #while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data[0]):
+    for l in range(len(training_data[0] // days_per_segment)):
         x = np.zeros(5*days_per_segment)
-        for i in range(5):
-            for j in range(days_per_segment):
-                x[i*days_per_segment+j] = training_data[i, days_per_segment * len(trainingsets)+j]
-        y = training_data[0, days_per_segment * len(trainingsets)+1]
+        for j in range(5):
+            for k in range(days_per_segment):
+                x[j * days_per_segment + k] = training_data[j, days_per_segment * len(trainingsets) + k]
+        y = training_data[0, days_per_segment * len(trainingsets) + 1]
         trainingsets.append([x, y])
 
 # Initialize test data from data file
