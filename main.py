@@ -49,13 +49,20 @@ test_data = np.copy(np.transpose(test_dataImport))
 
 testsets = []
 
-while len(testsets) < training_sets and (len(testsets) + 2) * (days_per_segment) < len(test_data[0]):
-    x = np.zeros(5*days_per_segment)
-    for i in range(5):
-        for j in range(days_per_segment):
-            x[i*days_per_segment+j] = test_data[i, days_per_segment * len(testsets) + j]
-    y = test_data[0, days_per_segment * len(testsets) + 1]
-    testsets.append([x, y])
+for i in test_file:
+    size = 0
+    test_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+    test_data = np.copy(np.transpose(test_dataImport))
+    for l in range (len(test_data[0]) - (days_per_segment + 1)):
+        # Calculate x segment
+        x = np.zeros(5 * days_per_segment)
+        for j in range(5):
+            for k in range(days_per_segment):
+                x[j * days_per_segment + k] = test_data[j, k + l]
+        # Calculate y segment
+        y = test_data[0, l + days_per_segment]
+        testsets.append([x, y])
+
 
 # Initialize the network
 print("Initializing network...")
