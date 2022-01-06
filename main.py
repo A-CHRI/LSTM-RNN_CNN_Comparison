@@ -80,7 +80,7 @@ for i in range(weeks_train):
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Done: {int((100/weeks_train) * i)}%, Week: {i}, Iteration:{j}, Loss: {loss.item()}')
+        print(f'Done: {int((100/weeks_train) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
         Loss[j*(i+1)] = loss.item()
 
         # Zero gradients, perform a backward pass, and update the weights.
