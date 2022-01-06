@@ -20,31 +20,31 @@ test_file = "data-GME.csv"
 
 # Initialize training data from data file
 training_dataImport = np.loadtxt(training_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
-training_data = np.copy(training_dataImport)
+training_data = np.copy(np.transpose(training_dataImport))
 
 trainingsets = []
 
-while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data):
+while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_per_segment) < len(training_data[0]):
     x = np.zeros(5*days_per_segment)
     for i in range(5):
         for j in range(days_per_segment):
-            x[i*days_per_segment+j] = training_data[days_per_segment * len(trainingsets)+j, i]
-    y = training_data[days_per_segment * len(trainingsets)+1, 0]
+            x[i*days_per_segment+j] = training_data[i, days_per_segment * len(trainingsets)+j]
+    y = training_data[0, days_per_segment * len(trainingsets)+1]
     trainingsets.append([x, y])
 
 # Initialize test data from data file
 test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
-test_data = np.copy(test_dataImport)
+test_data = np.copy(np.transpose(test_dataImport))
 
 
 testsets = []
 
-while len(testsets) < max_training_sets and (len(testsets) + 2) * (days_per_segment) < len(test_data):
+while len(testsets) < max_training_sets and (len(testsets) + 2) * (days_per_segment) < len(test_data[0]):
     x = np.zeros(5*days_per_segment)
     for i in range(5):
         for j in range(days_per_segment):
-            x[i*days_per_segment+j] = test_data[days_per_segment * len(testsets) + j, i]
-    y = test_data[days_per_segment * len(testsets) + 1, 0]
+            x[i*days_per_segment+j] = test_data[i, days_per_segment * len(testsets) + j]
+    y = test_data[0, days_per_segment * len(testsets) + 1]
     testsets.append([x, y])
 
 # Initialize the network
@@ -126,7 +126,7 @@ y_plot_test = np.array(test_data[0])
 plt.plot(x_plot_test, y_plot_test, label='AMD daily close price')
 
 # Prediction data
-x_plot_pred = np.arange(len(testsets))
+x_plot_pred = np.arange(len(testsets)) * days_per_segment
 plt.plot(x_plot_pred, y_plot_pred, label='Prediction')
 
 # Plotting
