@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 # Initial parameters
 max_output_neurons = 1
 max_hidden_layers = 2
-max_hidden_neurons = 16 #60
+max_hidden_neurons = 60 #60
 max_training_sets = 400
 learning_rate = 0.01
-max_rounds = 50 #500000
+max_rounds = 500 #500000
 days_per_segment = 7
 max_input_neurons = days_per_segment*5
 
@@ -78,8 +78,9 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 Loss = np.zeros(max_rounds * len(trainingsets))
 
 # Train the network
-weeks_train = len(trainingsets)
-for i in range(weeks_train):
+print("Training the network...")
+segments_train = len(trainingsets)
+for i in range(segments_train):
     # Initialize the tensors
     x = trainingsets[i][0]
     inp = torch.tensor(x).double()
@@ -93,7 +94,7 @@ for i in range(weeks_train):
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Done: {int((100/weeks_train) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
+        print(f'Done: {int((100/segments_train) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
         Loss[j*(i+1)] = loss.item()
 
         # Zero gradients, perform a backward pass, and update the weights.
@@ -102,10 +103,11 @@ for i in range(weeks_train):
         optimizer.step()
 
 # Test the network
-weeks_test = len(testsets)
+print("Testing the network...")
+segments_test = len(testsets)
 predtest = np.zeros(len(testsets))
 y_plot_pred = np.array([])
-for i in range(weeks_test):
+for i in range(segments_test):
     # Initialize the tensors
     x = testsets[i][0]
     inp = torch.tensor(x).double()
@@ -118,7 +120,7 @@ for i in range(weeks_test):
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
-    print(f'Done: {int((100/weeks_test) * i)}%, Week: {i}, Loss: {loss.item()}')
+    print(f'Done: {int((100/segments_test) * i)}%, Week: {i}, Loss: {loss.item()}')
     predtest[i] = loss.item()
 
 losspercent = 0
