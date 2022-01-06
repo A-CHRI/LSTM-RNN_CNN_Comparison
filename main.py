@@ -128,6 +128,8 @@ for i, e in enumerate(predtest):
 
 losspercent/len(predtest)
 print(losspercent)
+print(y_plot_pred)
+
 
 # Plot the loss function
 plt.plot(Loss)
