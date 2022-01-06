@@ -15,10 +15,10 @@ input_neurons = days_per_segment*5
 
 # Filenames
 training_files = ["data-VOO.csv", "data-AMD.csv"]
-test_file = "data-GME.csv"
+test_files = ["data-GME.csv"]
 
 # Print the parameter info
-print("\n Training on: " + str(training_files) + "\n Testing on: " + str(test_file))
+print("\n Training on: " + str(training_files) + "\n Testing on: " + str(test_files))
 print("\n Input neurons: " + str(input_neurons) + "\n Output neurons: " + str(output_neurons) + "\n Hidden layers: " + str(hidden_layers) + "\n Hidden neurons: " + str(hidden_neurons))
 print("\n Max training sets: " + str(training_sets) + "\n Learning rate: " + str(learning_rate) + "\n Iterations: " + str(iterations) + "\n Days per segment: " + str(days_per_segment))
 print("\n Device:" + str("CUDA" if torch.cuda.is_available() else "CPU"))
@@ -28,7 +28,6 @@ input("\n Press enter to continue...")
 print("Initializing training data...")
 trainingsets = []
 for i in training_files:
-    size = 0
     training_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     training_data = np.copy(np.transpose(training_dataImport))
 
@@ -44,13 +43,12 @@ for i in training_files:
 
 print("Initializing test data...")
 # Initialize test data from data file
-test_dataImport = np.loadtxt(test_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+test_dataImport = np.loadtxt(test_files, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
 test_data = np.copy(np.transpose(test_dataImport))
 
 testsets = []
 
-for i in test_file:
-    size = 0
+for i in test_files:
     test_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     test_data = np.copy(np.transpose(test_dataImport))
     for l in range (len(test_data[0]) - (days_per_segment + 1)):
