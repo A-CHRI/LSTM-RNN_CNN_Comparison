@@ -136,22 +136,27 @@ print(losspercent)
 print(y_plot_pred)
 
 
-# Plot the loss function
-plt.plot(Loss)
-plt.grid(True)
-plt.show()
-
 ## Set up plot for the data
+fig, (loss_plot, network_plot) = plt.subplots(2, 1)
+fig.suptitle('Loss and Network Output')
+
+# Plot the loss function
+loss_plot.set_ylabel("Loss function")
+loss_plot.plot(Loss, label="Loss function")
+loss_plot.legend()
+loss_plot.grid(True)
+
 # AMD data
+network_plot.set_ylabel("Neural network test")
 x_plot_test = np.arange(len(test_data[0]))
 y_plot_test = np.array(test_data[0])
-plt.plot(x_plot_test, y_plot_test, label='Test file daily closing price')
+network_plot.plot(x_plot_test, y_plot_test, label='Test files daily closing price')
 
 # Prediction data
 x_plot_pred = np.arange(len(testsets)) * days_per_segment
-plt.plot(x_plot_pred, y_plot_pred, label='Prediction')
+network_plot.plot(x_plot_pred, y_plot_pred, label='Prediction')
 
 # Plotting
-plt.grid(True)
-plt.legend()
+network_plot.grid(True)
+network_plot.legend()
 plt.show()
