@@ -4,7 +4,7 @@ from torch import nn
 import matplotlib.pyplot as plt
 
 # Initial parameters
-max_output_neurons = 2
+max_output_neurons = 1
 max_hidden_layers = 2
 max_hidden_neurons = 16 #60
 max_training_sets = 400
