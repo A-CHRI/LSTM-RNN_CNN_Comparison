@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # Initial parameters
 max_output_neurons = 2
 max_hidden_layers = 2
-max_hidden_neurons = 8 #60
+max_hidden_neurons = 16 #60
 max_training_sets = 400
 learning_rate = 0.01
 max_rounds = 50 #500000
@@ -29,7 +29,7 @@ while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (days_
     for i in range(5):
         for j in range(days_per_segment):
             x[i*days_per_segment+j] = training_data[days_per_segment * len(trainingsets)+j, i]
-    y = np.array([1 if np.mean(training_data[days_per_segment * (len(trainingsets) + 1): days_per_segment * (len(trainingsets) + 2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(training_data[days_per_segment*(len(trainingsets) + 1): days_per_segment * (len(trainingsets) + 2) + 1][0]) < np.mean(x) else 0])
+    y = training_data[days_per_segment * len(trainingsets)+1, 0]
     trainingsets.append([x, y])
 
 # Initialize test data from data file
@@ -44,7 +44,7 @@ while len(testsets) < max_training_sets and (len(testsets) + 2) * (days_per_segm
     for i in range(5):
         for j in range(days_per_segment):
             x[i*days_per_segment+j] = test_data[days_per_segment * len(testsets) + j, i]
-    y = np.array([1 if np.mean(test_data[days_per_segment * (len(testsets) + 1): days_per_segment * (len(testsets) + 2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(test_data[days_per_segment*(len(testsets) + 1): days_per_segment * (len(testsets) + 2) + 1][0]) < np.mean(x) else 0])
+    y = test_data[days_per_segment * len(testsets) + 1, 0]
     testsets.append([x, y])
 
 # Initialize the network
@@ -90,7 +90,7 @@ for i in range(weeks_train):
 
 # Test the network
 weeks_test = len(testsets)
-Losstest = np.zeros(len(test_data))
+Losstest = np.zeros(len(testsets))
 y_plot_pred = np.array([])
 for i in range(weeks_test):
     # Initialize the tensors
