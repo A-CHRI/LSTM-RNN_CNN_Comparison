@@ -98,7 +98,7 @@ for i in range(training_segments):
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Done: {int((100/training_segments) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
+        print(f'Training: {int((100/training_segments) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
         Loss[j*(i+1)] = loss.item()
 
         # Zero gradients, perform a backward pass, and update the weights.
@@ -124,7 +124,7 @@ for i in range(test_segments):
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
-    print(f'Done: {int((100/test_segments) * i)}%, Week: {i}, Loss: {loss.item()}')
+    print(f'Testing: {int((100/test_segments) * i)}%, Week: {i}, Loss: {loss.item()}')
     predtest[i] = loss.item()
 
 losspercent = 0
