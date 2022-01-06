@@ -123,7 +123,7 @@ plt.show()
 # AMD data
 x_plot_test = np.arange(len(test_data[0]))
 y_plot_test = np.array(test_data[0])
-plt.plot(x_plot_test, y_plot_test, label='AMD daily close price')
+plt.plot(x_plot_test, y_plot_test, label='Test file daily closing price')
 
 # Prediction data
 x_plot_pred = np.arange(len(testsets)) * days_per_segment
