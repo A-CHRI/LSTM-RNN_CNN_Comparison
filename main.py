@@ -20,9 +20,9 @@ training_data = np.copy(training_dataImport)
 
 trainingsets = []
 
-while len(trainingsets) < max_training_sets and (len(trainingsets) + 1)*(max_input_neurons) < len(training_data):
-    x = training_data[max_input_neurons*len(trainingsets):max_input_neurons*(len(trainingsets)+1), 0]
-    y = np.array([1 if np.mean(training_data[max_input_neurons*(len(trainingsets)+1):max_input_neurons*(len(trainingsets)+2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(training_data[max_input_neurons*(len(trainingsets)+1):max_input_neurons*(len(trainingsets)+2) + 1][0]) < np.mean(x) else 0])
+while len(trainingsets) < max_training_sets and (len(trainingsets) + 1) * (max_input_neurons) < len(training_data):
+    x = training_data[max_input_neurons * len(trainingsets): max_input_neurons * (len(trainingsets) + 1), 0]
+    y = np.array([1 if np.mean(training_data[max_input_neurons * (len(trainingsets) + 1): max_input_neurons * (len(trainingsets) + 2) + 1][0]) > np.mean(x) else 0, 1 if np.mean(training_data[max_input_neurons*(len(trainingsets) + 1): max_input_neurons * (len(trainingsets) + 2) + 1][0]) < np.mean(x) else 0])
     trainingsets.append([x, y])
 
 # Initialize test data from data file
@@ -31,9 +31,9 @@ test_data = np.copy(training_dataImport)
 
 testsets = []
 
-while len(testsets) < max_training_sets and (len(testsets) + 1)*(max_input_neurons) < len(test_data):
-    x = test_data[max_input_neurons*len(testsets):max_input_neurons*(len(testsets)+1), 0]
-    y = np.array([1 if test_data[max_input_neurons*(len(testsets)+1) + 1][0] > x[-1] else 0, 1 if test_data[max_input_neurons*(len(testsets)+1) + 1][0] < x[-1] else 0])
+while len(testsets) < max_training_sets and (len(testsets) + 1) * (max_input_neurons) < len(test_data):
+    x = test_data[max_input_neurons * len(testsets): max_input_neurons * (len(testsets) + 1), 0]
+    y = np.array([1 if test_data[max_input_neurons * (len(testsets) + 1) + 1][0] > x[-1] else 0, 1 if test_data[max_input_neurons * (len(testsets) + 1) + 1][0] < x[-1] else 0])
     testsets.append([x, y])
 
 # Initialize the network
