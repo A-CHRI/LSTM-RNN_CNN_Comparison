@@ -35,9 +35,9 @@ for i in training_files:
         x = np.zeros(5 * days_per_segment)
         for j in range(5):
             for k in range(days_per_segment):
-                x[j * days_per_segment + k] = training_data[j, k + l]
+                x[j * days_per_segment + k] = (training_data[j, k + l] - np.median(training_data[j,:]))/np.std(training_data[j,:])
         # Calculate y segment
-        y = training_data[0, l + days_per_segment]
+        y = (training_data[0, l + days_per_segment] - np.median(training_data[0, :]))/np.std(training_data[0,:])
         training_sets.append([x, y])
 print("Done!")
 
@@ -53,9 +53,9 @@ for i in test_files:
         x = np.zeros(5 * days_per_segment)
         for j in range(5):
             for k in range(days_per_segment):
-                x[j * days_per_segment + k] = test_data[j, k + l]
+                x[j * days_per_segment + k] = (test_data[j, k + l] - np.median(test_data[j, :]))/np.std(test_data[j, :])
         # Calculate y segment
-        y = test_data[0, l + days_per_segment]
+        y = (test_data[0, l + days_per_segment] - np.median(test_data[0, :]))/np.std(test_data[0, :])
         test_sets.append([x, y])
 print("Done!")
 
@@ -129,6 +129,7 @@ for i in range(test_segments):
 
 losspercent = 0
 for i, e in enumerate(predtest):
+    print(i, e)
     losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
 
 losspercent = losspercent/len(predtest)
