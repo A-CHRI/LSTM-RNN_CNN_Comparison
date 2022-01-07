@@ -137,10 +137,8 @@ for i in range(test_segments):
 
     y = test_sets[i][1]
     outp = torch.tensor(y, device=device).double()
-    print(inp)
-    print(outp)
+
     y_pred = model(inp)
-    print(y_pred)
     y_plot_pred[i] = y_pred.cpu().detach().numpy() * np.std(test_data[0, :]) + np.mean(test_data[0, :])
 
     # Compute and print loss
