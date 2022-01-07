@@ -94,7 +94,7 @@ def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            
+
     timer_end = time.perf_counter()
     print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
 
