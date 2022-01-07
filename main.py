@@ -24,11 +24,12 @@ print("\n Device: " + str("CUDA" if torch.cuda.is_available() else "CPU"))
 input("\n Press enter to continue...")
 
 # Initialize training data from data files
-print("Initializing training data...")
+print("\Importing training data...")
 training_sets = []
 for i in training_files:
     training_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     training_data = np.copy(np.transpose(training_dataImport))
+    print("File " + str(i) + " imported.\nNormalizing...")
 
     for l in range (len(training_data[0]) - (days_per_segment + 1)):
         # Calculate x segment
@@ -39,15 +40,17 @@ for i in training_files:
         # Calculate y segment
         y = (training_data[0, l + days_per_segment] - np.median(training_data[0, :]))/np.std(training_data[0,:])
         training_sets.append([x, y])
-print("Done!")
+    print("Done!")
 
-print("Initializing test data...")
+print("\Importing test data...")
 # Initialize test data from data files
 test_sets = []
 
 for i in test_files:
     test_dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
     test_data = np.copy(np.transpose(test_dataImport))
+    print("File " + str(i) + " imported.\nNormalizing...")
+
     for l in range (len(test_data[0]) - (days_per_segment + 1)):
         # Calculate x segment
         x = np.zeros(5 * days_per_segment)
@@ -57,11 +60,11 @@ for i in test_files:
         # Calculate y segment
         y = (test_data[0, l + days_per_segment] - np.median(test_data[0, :]))/np.std(test_data[0, :])
         test_sets.append([x, y])
-print("Done!")
+    print("Done!")
 
 
 # Initialize the network
-print("Initializing network...")
+print("\nInitializing network...")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = nn.Sequential(
     nn.Linear(input_neurons, hidden_neurons),
@@ -81,7 +84,7 @@ print("Done!")
 
 
 # Train the network
-print("Training the network... (" + str(len(training_sets)) + " segments to train on)")
+print("\nTraining the network... (" + str(len(training_sets)) + " segments to train on)")
 training_segments = len(training_sets)
 for i in range(training_segments):
     # Initialize the tensors
@@ -107,7 +110,7 @@ for i in range(training_segments):
 print("Done!")
 
 # Test the network
-print("Testing the network... (" + str(len(test_sets)) + " segments to test)")
+print("\nTesting the network... (" + str(len(test_sets)) + " segments to test)")
 test_segments = len(test_sets)
 predtest = np.zeros(len(test_sets))
 y_plot_pred = np.zeros(test_segments)
