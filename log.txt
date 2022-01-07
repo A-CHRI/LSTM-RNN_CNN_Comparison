@@ -1,0 +1,19 @@
+
+Training on: ['data-VOO-small.csv', 'data-AMD-small.csv']
+Testing on: ['data-GME-small.csv']
+Logging to: log.txt
+
+Input neurons: 105
+Output neurons: 1
+Hidden layers: 2
+Hidden neurons: 70
+
+Learning rate: 0.01
+Iterations: 5
+Days per segment: 21
+
+Device: CUDA
+
+Importing training data...
+File data-VOO-small.csv imported.
+Normalizing...
