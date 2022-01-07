@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 # Initial parameters
 output_neurons = 1
 hidden_layers = 2 # No theoreticle reason to be more than 2
-learning_rate = 0.001
-iterations = 10 #500000
-days_per_segment = 21 # Usually 21 for stable stocks, and lower the more volatile
+learning_rate = 0.00001
+iterations = 7 #500000
+days_per_segment = 7 # Usually 21 for stable stocks, and lower the more volatile
 input_neurons = days_per_segment * 5
 hidden_neurons = int((2 / 3) * input_neurons) # Usually 2/3 the size of the input neurons
 
@@ -20,8 +20,8 @@ def print_and_log(string):
     log_file.write(string + "\n")
 
 # Filenames
-training_files = ["data-VOO-small.csv", "data-AMD-small.csv"]
-test_files = ["data-GME-small.csv"]
+training_files = ["data-AAPL-small.csv", "data-TSLA-small.csv", "data-VOO-small.csv", "data-AMD-small.csv"]
+test_files = ["data-GME.csv"]
 
 # Print the parameter info
 print_and_log("\nTraining on: " + str(training_files) + "\nTesting on: " + str(test_files) + "\nLogging to: log.txt")

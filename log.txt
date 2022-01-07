@@ -1,39 +1,45 @@
 
-Training on: ['data-VOO-small.csv', 'data-AMD-small.csv']
-Testing on: ['data-GME-small.csv']
+Training on: ['data-AAPL-small.csv', 'data-TSLA-small.csv', 'data-VOO-small.csv', 'data-AMD-small.csv']
+Testing on: ['data-GME.csv']
 Logging to: log.txt
 
-Input neurons: 105
+Input neurons: 35
 Output neurons: 1
 Hidden layers: 2
-Hidden neurons: 70
+Hidden neurons: 23
 
-Learning rate: 0.01
-Iterations: 5
-Days per segment: 21
+Learning rate: 1e-05
+Iterations: 7
+Days per segment: 7
 
 Device: CUDA
 
 Importing training data...
+File data-AAPL-small.csv imported.
+Normalizing...
+Done! (0.4537 seconds).
+File data-TSLA-small.csv imported.
+Normalizing...
+Done! (0.6101 seconds).
 File data-VOO-small.csv imported.
 Normalizing...
-Done! (1.7275 seconds).
+Done! (0.6249 seconds).
 File data-AMD-small.csv imported.
 Normalizing...
-Done! (1.7046 seconds).
+Done! (0.5587 seconds).
 
 Importing test data...
-File data-GME-small.csv imported.
+File data-GME.csv imported.
 Normalizing...
-Done! (1.7147 seconds).
+Done! (3.5218 seconds).
 
 Initializing network...
-Done! (1.6442 seconds).
+Done! (1.8701 seconds).
 
-Training the network... (956 segments to train on)
-Done! (18.6875 seconds).
+Training the network... (1968 segments to train on)
+Done! (36.0059 seconds).
 
-Testing the network... (478 segments to test)
-Done! (0.7176 seconds).
+Testing the network... (2509 segments to test)
+Done! (4.7171 seconds).
 Calculating loss percentage...
-Done! Loss percentage: -2.7105911080647207%
+Done! Loss percentage: 0.9736706858891405%
