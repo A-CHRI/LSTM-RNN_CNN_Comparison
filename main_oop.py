@@ -15,8 +15,8 @@ days_per_segment = 7 # Usually 21 for stable stocks, and lower the more volatile
 input_neurons = days_per_segment * 5
 hidden_neurons = int((2 / 3) * input_neurons) # Usually 2/3 the size of the input neurons
 
-training_files = ["data-AAPL-small.csv", "data-TSLA-small.csv", "data-VOO-small.csv", "data-AMD-small.csv"]
-test_files = ["data-GME.csv"]
+training_files = ["data-AAPL-small.csv", "data-GME-small.csv", "data-VOO-small.csv", "data-AMD-small.csv"]
+test_files = ["data-TSLA.csv"]
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
