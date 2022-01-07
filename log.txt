@@ -12,8 +12,28 @@ Learning rate: 0.01
 Iterations: 5
 Days per segment: 21
 
-Device: CUDA
+Device: CPU
 
 Importing training data...
 File data-VOO-small.csv imported.
 Normalizing...
+Done! (1.1962 seconds).
+File data-AMD-small.csv imported.
+Normalizing...
+Done! (1.1875 seconds).
+
+Importing test data...
+File data-GME-small.csv imported.
+Normalizing...
+Done! (1.2053 seconds).
+
+Initializing network...
+Done! (0.0021 seconds).
+
+Training the network... (956 segments to train on)
+Done! (6.5854 seconds).
+
+Testing the network... (478 segments to test)
+Done! (2.2152 seconds).
+Calculating loss percentage...
+Done! Loss percentage: -7.318666784742271%
