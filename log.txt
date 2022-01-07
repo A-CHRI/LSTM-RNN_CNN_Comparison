@@ -17,3 +17,23 @@ Device: CUDA
 Importing training data...
 File data-VOO-small.csv imported.
 Normalizing...
+Done! (1.7275 seconds).
+File data-AMD-small.csv imported.
+Normalizing...
+Done! (1.7046 seconds).
+
+Importing test data...
+File data-GME-small.csv imported.
+Normalizing...
+Done! (1.7147 seconds).
+
+Initializing network...
+Done! (1.6442 seconds).
+
+Training the network... (956 segments to train on)
+Done! (18.6875 seconds).
+
+Testing the network... (478 segments to test)
+Done! (0.7176 seconds).
+Calculating loss percentage...
+Done! Loss percentage: -2.7105911080647207%
