@@ -9,7 +9,7 @@ hidden_layers = 2 # No theoreticle reason to be more than 2
 hidden_neurons = 24 # Usually 2/3 the size of the input neurons
 learning_rate = 0.01
 iterations = 5 #500000
-days_per_segment = 7
+days_per_segment = 21 # Usually 21 for stable stocks, and lower the more volatile
 input_neurons = days_per_segment*5
 
 # Filenames
@@ -132,7 +132,7 @@ for i, e in enumerate(predtest):
     losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
 
 losspercent = losspercent/len(predtest)
-print("Done! (" + str(losspercent) + " % loss)")
+print("Done! (" + str(losspercent) + "% loss)")
 
 ### Plotting ###
 # Set up plot for the data
