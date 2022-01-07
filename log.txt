@@ -6,7 +6,7 @@ Logging to: log.txt
 Input neurons: 105
 Output neurons: 1
 Hidden layers: 2
-Hidden neurons: 24
+Hidden neurons: 70
 
 Learning rate: 0.01
 Iterations: 5
@@ -17,23 +17,23 @@ Device: CPU
 Importing training data...
 File data-VOO-small.csv imported.
 Normalizing...
-Done! (1.1912 seconds).
+Done! (1.2278 seconds).
 File data-AMD-small.csv imported.
 Normalizing...
-Done! (1.19 seconds).
+Done! (1.4824 seconds).
 
 Importing test data...
 File data-GME-small.csv imported.
 Normalizing...
-Done! (1.1936 seconds).
+Done! (1.3044 seconds).
 
 Initializing network...
-Done! (0.0015 seconds).
+Done! (0.004 seconds).
 
 Training the network... (956 segments to train on)
-Done! (5.5777 seconds).
+Done! (9.3717 seconds).
 
 Testing the network... (478 segments to test)
-Done! (2.3691 seconds).
+Done! (3.1401 seconds).
 Calculating loss percentage...
-Done! Loss percentage: -6.8364092218100145%
+Done! Loss percentage: -7.444336341324029%
