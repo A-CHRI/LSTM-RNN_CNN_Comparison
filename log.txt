@@ -16,14 +16,16 @@ Device: CUDA
 Importing data...
 File data-VOO-small.csv imported.
 Normalizing...
-Done! (0.3454 seconds).
+Done! (0.2779 seconds).
 File data-AMD-small.csv imported.
 Normalizing...
-Done! (0.3531 seconds).
+Done! (0.2593 seconds).
+Done! (0.2597 seconds).
 Importing data...
 File data-GME-small.csv imported.
 Normalizing...
-Done! (0.3157 seconds).
+Done! (0.26 seconds).
+Done! (0.2605 seconds).
 
 Initializing network...
 Model: NeuralNetwork(
@@ -37,12 +39,11 @@ Model: NeuralNetwork(
     (6): Linear(in_features=10, out_features=1, bias=True)
   )
 )
-Done! (1.6035 seconds).
+Done! (1.7341 seconds).
 
 Training the network... (992 segments to train on)
-Done! (39.0466 seconds).
 
 Testing the network... (496 segments to test)
 Calculating loss percentage...
-Done! Loss percentage: 0.6017684702566045%
-Done! (0.7677 seconds).
+Done! Loss percentage: 0.8320777461802253%
+Done! (0.7439 seconds).

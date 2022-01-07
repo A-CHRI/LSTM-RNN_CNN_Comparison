@@ -65,9 +65,16 @@ def import_data(filenames, days_per_segment):
             set.append([x, y])
         timer_end = time.perf_counter()
         print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
+
+    timer_end = time.perf_counter()
+    print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
     return data, set
 
+# Train the network
 def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss):
+    print_and_log("\nTraining the network... (" + str(len(training_sets)) + " segments to train on)")
+    timer_start = time.perf_counter()
+
     segments_count = len(segments)
     for i in range(segments_count):
         # Initialize the tensors
@@ -91,7 +98,11 @@ def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss)
             loss.backward()
             optimizer.step()
 
+# Test the network
 def Test_network(device, segments, model, loss_fn):
+    print_and_log("\nTesting the network... (" + str(len(test_sets)) + " segments to test)")
+    timer_start = time.perf_counter()
+
     segments_count = len(segments)
     predtest = np.zeros(len(segments))
     y_plot_pred = np.zeros(segments_count)
@@ -116,9 +127,40 @@ def Test_network(device, segments, model, loss_fn):
     for i, e in enumerate(predtest):
         losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
     losspercent = losspercent/len(predtest)
-    print_and_log("Done! Loss percentage: " + str(losspercent) + "%")
+    print_and_log("Done! Loss percentage: " + str(round(losspercent, 4)) + "%")
+
+    timer_end = time.perf_counter()
+    print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
 
     return y_plot_pred
+
+# Plotting
+def Plot(Loss, y_plot_pred, test_sets):
+    # Set up plot for the data
+    fig, (loss_plot, network_plot) = plt.subplots(2, 1)
+    fig.suptitle('Loss and Network Output')
+
+    # Set up the loss plot
+    loss_plot.set_ylabel("Loss function")
+    loss_plot.plot(Loss, label="Loss function")
+    loss_plot.legend()
+    loss_plot.grid(True)
+
+    # set up the test plot
+    network_plot.set_ylabel("Neural network test")
+    x_plot_test = np.arange(len(test_data[0]))
+    y_plot_test = np.array(test_data[0])
+    network_plot.plot(x_plot_test, y_plot_test, label='Test files daily closing price')
+
+    # Prediction data
+    x_plot_pred = np.arange(len(test_sets)) + days_per_segment
+    network_plot.plot(x_plot_pred, y_plot_pred, label='Prediction')
+
+    # Plotting
+    network_plot.grid(True)
+    network_plot.legend()
+    plt.show()
+
 
 if __name__ == '__main__':
     # Print the parameter info
@@ -146,48 +188,13 @@ if __name__ == '__main__':
     print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
 
     # Train the neural network
-    print_and_log("\nTraining the network... (" + str(len(training_sets)) + " segments to train on)")
-    timer_start = time.perf_counter()
-
     Train_network(iterations, device, training_sets, model, loss_fn, optimizer, Loss)
 
-    timer_end = time.perf_counter()
-    print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
-
     # Test the neural network
-    print_and_log("\nTesting the network... (" + str(len(test_sets)) + " segments to test)")
-    timer_start = time.perf_counter()
-
     y_plot_pred = Test_network(device, test_sets, model, loss_fn)
-
-    timer_end = time.perf_counter()
-    print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
 
     # Flush the log file
     log_file.flush()
 
     # Plot the data
-    # Set up plot for the data
-    fig, (loss_plot, network_plot) = plt.subplots(2, 1)
-    fig.suptitle('Loss and Network Output')
-
-    # Set up the loss plot
-    loss_plot.set_ylabel("Loss function")
-    loss_plot.plot(Loss, label="Loss function")
-    loss_plot.legend()
-    loss_plot.grid(True)
-
-    # set up the test plot
-    network_plot.set_ylabel("Neural network test")
-    x_plot_test = np.arange(len(test_data[0]))
-    y_plot_test = np.array(test_data[0])
-    network_plot.plot(x_plot_test, y_plot_test, label='Test files daily closing price')
-
-    # Prediction data
-    x_plot_pred = np.arange(len(test_sets)) + days_per_segment
-    network_plot.plot(x_plot_pred, y_plot_pred, label='Prediction')
-
-    # Plotting
-    network_plot.grid(True)
-    network_plot.legend()
-    plt.show()
+    Plot(Loss, y_plot_pred, test_sets)
