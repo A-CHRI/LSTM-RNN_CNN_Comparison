@@ -120,7 +120,7 @@ for i in range(test_segments):
     outp = torch.tensor(y, device=device).double()
 
     y_pred = model(inp)
-    y_plot_pred[i] = y_pred.cpu().detach().numpy()
+    y_plot_pred[i] = y_pred.cpu().detach().numpy() * np.std(test_data[0, :]) + np.median(test_data[0, :])
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
