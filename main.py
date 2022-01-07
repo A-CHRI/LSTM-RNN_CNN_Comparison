@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 # Initial parameters
 output_neurons = 1
 hidden_layers = 2 # No theoreticle reason to be more than 2
-learning_rate = 0.01
-iterations = 5 #500000
+learning_rate = 0.001
+iterations = 10 #500000
 days_per_segment = 21 # Usually 21 for stable stocks, and lower the more volatile
 input_neurons = days_per_segment * 5
 hidden_neurons = int((2 / 3) * input_neurons) # Usually 2/3 the size of the input neurons
@@ -77,7 +77,7 @@ for i in test_files:
 # Initialize the network
 print_and_log("\nInitializing network...")
 timer_start = time.perf_counter()
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = nn.Sequential(
     nn.Linear(input_neurons, hidden_neurons),
     nn.ReLU(),
@@ -143,7 +143,7 @@ for i in range(test_segments):
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
-    print(f'Testing: {int((100/test_segments) * i)}%, Week: {i}, Loss: {loss.item()}')
+    print(f'Testing: {int((100/test_segments) * i)}%, Segment: {i}, Loss: {loss.item()}')
     predtest[i] = loss.item()
 timer_end = time.perf_counter()
 print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
