@@ -42,10 +42,7 @@ for i in training_files:
         training_sets.append([x, y])
 
 print("Initializing test data...")
-# Initialize test data from data file
-test_dataImport = np.loadtxt(test_files, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
-test_data = np.copy(np.transpose(test_dataImport))
-
+# Initialize test data from data files
 test_sets = []
 
 for i in test_files:
@@ -87,10 +84,10 @@ training_segments = len(training_sets)
 for i in range(training_segments):
     # Initialize the tensors
     x = training_sets[i][0]
-    inp = torch.tensor(x).double()
+    inp = torch.tensor(x, device=device).double()
 
-    y = training_sets[i][1]
-    outp = torch.tensor(y).double()
+    y = [training_sets[i][1]]
+    outp = torch.tensor(y, device=device).double()
 
     for j in range(iterations):
         # Forward pass
@@ -110,17 +107,17 @@ for i in range(training_segments):
 print("Testing the network... \n - " + str(len(test_sets)) + " segments to test.")
 test_segments = len(test_sets)
 predtest = np.zeros(len(test_sets))
-y_plot_pred = np.array([])
+y_plot_pred = np.zeros(test_segments)
 for i in range(test_segments):
     # Initialize the tensors
     x = test_sets[i][0]
-    inp = torch.tensor(x).double()
+    inp = torch.tensor(x, device=device).double()
 
     y = test_sets[i][1]
-    outp = torch.tensor(y).double()
+    outp = torch.tensor(y, device=device).double()
 
     y_pred = model(inp)
-    y_plot_pred = np.append(y_plot_pred, y_pred.detach().numpy())
+    y_plot_pred[i] = y_pred.detach().numpy()
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
