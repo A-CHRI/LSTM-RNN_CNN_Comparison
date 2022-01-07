@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 # Initial parameters
 output_neurons = 1
 hidden_layers = 2 # No theoreticle reason to be more than 2
-hidden_neurons = 24 # Usually 2/3 the size of the input neurons
 learning_rate = 0.01
 iterations = 5 #500000
 days_per_segment = 21 # Usually 21 for stable stocks, and lower the more volatile
-input_neurons = days_per_segment*5
+input_neurons = days_per_segment * 5
+hidden_neurons = int((2 / 3) * input_neurons) # Usually 2/3 the size of the input neurons
 
 # Initiate logging
 log_file = open("log.txt", "w")
