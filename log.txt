@@ -1,0 +1,39 @@
+
+Training on: ['data-VOO.csv', 'data-AMD.csv']
+Testing on: ['data-GME.csv']
+Logging to: log.txt
+
+Input neurons: 105
+Output neurons: 1
+Hidden layers: 2
+Hidden neurons: 24
+
+Learning rate: 0.01
+Iterations: 5
+Days per segment: 21
+
+Device: CUDA
+
+Importing training data...
+File data-VOO.csv imported.
+Normalizing...
+Done! (20.8388 seconds).
+File data-AMD.csv imported.
+Normalizing...
+Done! (20.5043 seconds).
+
+Importing test data...
+File data-GME.csv imported.
+Normalizing...
+Done! (20.7237 seconds).
+
+Initializing network...
+Done! (1.7477 seconds).
+
+Training the network... (4990 segments to train on)
+Done! (110.9252 seconds).
+
+Testing the network... (2495 segments to test)
+Done! (4.3674 seconds).
+Calculating loss percentage...
+Done! Loss percentage: -inf%
