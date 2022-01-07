@@ -152,7 +152,7 @@ y_plot_test = np.array(test_data[0])
 network_plot.plot(x_plot_test, y_plot_test, label='Test files daily closing price')
 
 # Prediction data
-x_plot_pred = np.arange(len(test_sets)) * days_per_segment
+x_plot_pred = np.arange(len(test_sets)) + days_per_segment
 network_plot.plot(x_plot_pred, y_plot_pred, label='Prediction')
 
 # Plotting
