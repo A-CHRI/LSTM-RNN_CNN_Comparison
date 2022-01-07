@@ -1,45 +1,49 @@
 
-Training on: ['data-AAPL-small.csv', 'data-TSLA-small.csv', 'data-VOO-small.csv', 'data-AMD-small.csv']
-Testing on: ['data-GME.csv']
+Training on: ['data-VOO-small.csv', 'data-AMD-small.csv']
+Testing on: ['data-GME-small.csv']
 Logging to: log.txt
 
-Input neurons: 35
+Input neurons: 15
 Output neurons: 1
 Hidden layers: 2
-Hidden neurons: 23
+Hidden neurons: 10
 
 Learning rate: 1e-05
-Iterations: 7
-Days per segment: 7
+Iterations: 10
+Days per segment: 3
 
 Device: CUDA
-
-Importing training data...
-File data-AAPL-small.csv imported.
-Normalizing...
-Done! (0.4537 seconds).
-File data-TSLA-small.csv imported.
-Normalizing...
-Done! (0.6101 seconds).
+Importing data...
 File data-VOO-small.csv imported.
 Normalizing...
-Done! (0.6249 seconds).
+Done! (0.2779 seconds).
 File data-AMD-small.csv imported.
 Normalizing...
-Done! (0.5587 seconds).
-
-Importing test data...
-File data-GME.csv imported.
+Done! (0.2593 seconds).
+Done! (0.2597 seconds).
+Importing data...
+File data-GME-small.csv imported.
 Normalizing...
-Done! (3.5218 seconds).
+Done! (0.26 seconds).
+Done! (0.2605 seconds).
 
 Initializing network...
-Done! (1.8701 seconds).
+Model: NeuralNetwork(
+  (linear_relu_stack): Sequential(
+    (0): Linear(in_features=15, out_features=10, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=10, out_features=10, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=10, out_features=10, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=10, out_features=1, bias=True)
+  )
+)
+Done! (1.7341 seconds).
 
-Training the network... (1968 segments to train on)
-Done! (36.0059 seconds).
+Training the network... (992 segments to train on)
 
-Testing the network... (2509 segments to test)
-Done! (4.7171 seconds).
+Testing the network... (496 segments to test)
 Calculating loss percentage...
-Done! Loss percentage: 0.9736706858891405%
+Done! Loss percentage: 0.8320777461802253%
+Done! (0.7439 seconds).
