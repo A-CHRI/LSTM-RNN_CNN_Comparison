@@ -11,12 +11,12 @@ output_neurons = 1
 hidden_layers = 2 # No theoreticle reason to be more than 2
 learning_rate = 0.00001
 iterations = 10 #500000
-days_per_segment = 3 # Usually 21 for stable stocks, and lower the more volatile
+days_per_segment = 7 # Usually 21 for stable stocks, and lower the more volatile
 input_neurons = days_per_segment * 5
 hidden_neurons = int((2 / 3) * input_neurons) # Usually 2/3 the size of the input neurons
 
-training_files = ["data-VOO-small.csv", "data-AMD-small.csv"]
-test_files = ["data-GME-small.csv"]
+training_files = ["data-AAPL-small.csv", "data-TSLA-small.csv", "data-VOO-small.csv", "data-AMD-small.csv"]
+test_files = ["data-GME.csv"]
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
