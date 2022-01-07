@@ -13,8 +13,8 @@ days_per_segment = 21 # Usually 21 for stable stocks, and lower the more volatil
 input_neurons = days_per_segment*5
 
 # Filenames
-training_files = ["data-VOO.csv", "data-AMD.csv"]
-test_files = ["data-GME.csv"]
+training_files = ["data-VOO-small.csv", "data-AMD-small.csv"]
+test_files = ["data-GME-small.csv"]
 
 # Print the parameter info
 print("\n Training on: " + str(training_files) + "\n Testing on: " + str(test_files))
@@ -36,9 +36,9 @@ for i in training_files:
         x = np.zeros(5 * days_per_segment)
         for j in range(5):
             for k in range(days_per_segment):
-                x[j * days_per_segment + k] = (training_data[j, k + l] - np.median(training_data[j,:]))/np.std(training_data[j,:])
+                x[j * days_per_segment + k] = (training_data[j, k + l] - np.mean(training_data[j,:]))/np.std(training_data[j,:])
         # Calculate y segment
-        y = (training_data[0, l + days_per_segment] - np.median(training_data[0, :]))/np.std(training_data[0,:])
+        y = (training_data[0, l + days_per_segment] - np.mean(training_data[0, :]))/np.std(training_data[0,:])
         training_sets.append([x, y])
     print("Done!")
 
@@ -56,9 +56,9 @@ for i in test_files:
         x = np.zeros(5 * days_per_segment)
         for j in range(5):
             for k in range(days_per_segment):
-                x[j * days_per_segment + k] = (test_data[j, k + l] - np.median(test_data[j, :]))/np.std(test_data[j, :])
+                x[j * days_per_segment + k] = (test_data[j, k + l] - np.mean(test_data[j, :]))/np.std(test_data[j, :])
         # Calculate y segment
-        y = (test_data[0, l + days_per_segment] - np.median(test_data[0, :]))/np.std(test_data[0, :])
+        y = (test_data[0, l + days_per_segment] - np.mean(test_data[0, :]))/np.std(test_data[0, :])
         test_sets.append([x, y])
     print("Done!")
 
@@ -121,9 +121,11 @@ for i in range(test_segments):
 
     y = test_sets[i][1]
     outp = torch.tensor(y, device=device).double()
-
+    print(inp)
+    print(outp)
     y_pred = model(inp)
-    y_plot_pred[i] = y_pred.cpu().detach().numpy() * np.std(test_data[0, :]) + np.median(test_data[0, :])
+    print(y_pred)
+    y_plot_pred[i] = y_pred.cpu().detach().numpy() * np.std(test_data[0, :]) + np.mean(test_data[0, :])
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
@@ -132,7 +134,6 @@ for i in range(test_segments):
 
 losspercent = 0
 for i, e in enumerate(predtest):
-    print(i, e)
     losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
 
 losspercent = losspercent/len(predtest)
