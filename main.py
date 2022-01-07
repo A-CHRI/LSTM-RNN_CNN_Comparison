@@ -5,11 +5,10 @@ import matplotlib.pyplot as plt
 
 # Initial parameters
 output_neurons = 1
-hidden_layers = 2
-hidden_neurons = 16 #60
-training_sets = 400
+hidden_layers = 2 # No theoreticle reason to be more than 2
+hidden_neurons = 24 # Usually 2/3 the size of the input neurons
 learning_rate = 0.01
-iterations = 50 #500000
+iterations = 5 #500000
 days_per_segment = 7
 input_neurons = days_per_segment*5
 
@@ -20,8 +19,8 @@ test_files = ["data-GME.csv"]
 # Print the parameter info
 print("\n Training on: " + str(training_files) + "\n Testing on: " + str(test_files))
 print("\n Input neurons: " + str(input_neurons) + "\n Output neurons: " + str(output_neurons) + "\n Hidden layers: " + str(hidden_layers) + "\n Hidden neurons: " + str(hidden_neurons))
-print("\n Max training sets: " + str(training_sets) + "\n Learning rate: " + str(learning_rate) + "\n Iterations: " + str(iterations) + "\n Days per segment: " + str(days_per_segment))
-print("\n Device:" + str("CUDA" if torch.cuda.is_available() else "CPU"))
+print("\n Learning rate: " + str(learning_rate) + "\n Iterations: " + str(iterations) + "\n Days per segment: " + str(days_per_segment))
+print("\n Device: " + str("CUDA" if torch.cuda.is_available() else "CPU"))
 input("\n Press enter to continue...")
 
 # Initialize training data from data files
@@ -40,6 +39,7 @@ for i in training_files:
         # Calculate y segment
         y = training_data[0, l + days_per_segment]
         training_sets.append([x, y])
+print("Done!")
 
 print("Initializing test data...")
 # Initialize test data from data files
@@ -57,6 +57,7 @@ for i in test_files:
         # Calculate y segment
         y = test_data[0, l + days_per_segment]
         test_sets.append([x, y])
+print("Done!")
 
 
 # Initialize the network
@@ -76,10 +77,11 @@ loss_fn = nn.MSELoss(reduction='sum')
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 Loss = np.zeros(iterations * len(training_sets))
+print("Done!")
 
 
 # Train the network
-print("Training the network... \n - " + str(len(training_sets)) + " segments to train on.")
+print("Training the network... (" + str(len(training_sets)) + " segments to train on)")
 training_segments = len(training_sets)
 for i in range(training_segments):
     # Initialize the tensors
@@ -102,9 +104,10 @@ for i in range(training_segments):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+print("Done!")
 
 # Test the network
-print("Testing the network... \n - " + str(len(test_sets)) + " segments to test.")
+print("Testing the network... (" + str(len(test_sets)) + " segments to test)")
 test_segments = len(test_sets)
 predtest = np.zeros(len(test_sets))
 y_plot_pred = np.zeros(test_segments)
@@ -117,7 +120,7 @@ for i in range(test_segments):
     outp = torch.tensor(y, device=device).double()
 
     y_pred = model(inp)
-    y_plot_pred[i] = y_pred.detach().numpy()
+    y_plot_pred[i] = y_pred.cpu().detach().numpy()
 
     # Compute and print loss
     loss = loss_fn(y_pred, outp)
@@ -129,7 +132,7 @@ for i, e in enumerate(predtest):
     losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
 
 losspercent = losspercent/len(predtest)
-print(losspercent)
+print("Done! (" + str(losspercent) + " % loss)")
 
 ### Plotting ###
 # Set up plot for the data
