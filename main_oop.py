@@ -15,8 +15,8 @@ days_per_segment = 7 # Usually 21 for stable stocks, and lower the more volatile
 input_neurons = days_per_segment * 5
 hidden_neurons = int((2 / 3) * input_neurons) # Usually 2/3 the size of the input neurons
 
-training_files = ["data-AAPL-small.csv", "data-GME-small.csv", "data-VOO-small.csv", "data-AMD-small.csv"]
-test_files = ["data-TSLA.csv"]
+training_files = ["data-TSLA-small.csv", "data-GME-small.csv", "data-VOO-small.csv", "data-AMD-small.csv"]
+test_files = ["data-AAPL.csv"]
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -74,6 +74,16 @@ def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss)
 
     segments_count = len(segments)
     for i in range(segments_count):
+        # Estimate the remaining time
+        if i == 0:
+            time_remaining = "--"
+            time_estimate_start = time.perf_counter()
+        elif i % 10 == 0:
+            time_estimate_end = time.perf_counter()
+            time_estimate_elapsed = time_estimate_end - time_estimate_start
+            time_estimate_start = time_estimate_end
+            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / 10) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / 10) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / 10))) + " second(s)"
+
         # Initialize the tensors
         x = segments[i][0]
         inp = torch.tensor(x, device=device).double()
@@ -87,7 +97,7 @@ def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss)
 
             # Compute and print loss
             loss = loss_fn(y_pred, outp)
-            print(f'Training: {int((100/segments_count) * i)}%, Segment: {i}, Iteration:{j}, Loss: {loss.item()}')
+            print(f'Training: {int((100/segments_count) * i)}%, Estimated time left: {time_remaining} Segment: {i}, Iteration:{j}, Loss: {loss.item()}\r', end='')
             Loss[j*(i+1)] = loss.item()
 
             # Zero gradients, perform a backward pass, and update the weights.
@@ -107,11 +117,21 @@ def Test_network(device, segments, model, loss_fn):
     predtest = np.zeros(len(segments))
     y_plot_pred = np.zeros(segments_count)
     for i in range(segments_count):
+        # Estimate the remaining time
+        if i == 0:
+            time_remaining = "--"
+            time_estimate_start = time.perf_counter()
+        elif i % 10 == 0:
+            time_estimate_end = time.perf_counter()
+            time_estimate_elapsed = time_estimate_end - time_estimate_start
+            time_estimate_start = time_estimate_end
+            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / 10) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / 10) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / 10))) + " second(s)"
+
         # Initialize the tensors
         x = segments[i][0]
         inp = torch.tensor(x, device=device).double()
 
-        y = segments[i][1]
+        y = [segments[i][1]]
         outp = torch.tensor(y, device=device).double()
 
         y_pred = model(inp)
@@ -119,18 +139,24 @@ def Test_network(device, segments, model, loss_fn):
 
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
-        print(f'Testing: {int((100/segments_count) * i)}%, Segment: {i}, Loss: {loss.item()}')
+        print(f'Testing: {int((100/segments_count) * i)}%, Estimated time remaining: {time_remaining} Segment: {i}, Loss: {loss.item()}\r', end='')
         predtest[i] = loss.item()
+        
+        ### TEMPORARY (This is for testing) ###
+        # Zero gradients, perform a backward pass, and update the weights.
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
 
     print_and_log("Calculating loss percentage...")
     losspercent = 0
     for i, e in enumerate(predtest):
         losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
     losspercent = losspercent/len(predtest)
-    print_and_log("Done! Loss percentage: " + str(round(losspercent, 4)) + "%")
 
     timer_end = time.perf_counter()
     print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
+    print_and_log("Loss percentage: " + str(round(losspercent, 4)) + "%")
 
     return y_plot_pred
 
@@ -168,7 +194,6 @@ if __name__ == '__main__':
     print_and_log("\nInput neurons: " + str(input_neurons) + "\nOutput neurons: " + str(output_neurons) + "\nHidden layers: " + str(hidden_layers) + "\nHidden neurons: " + str(hidden_neurons))
     print_and_log("\nLearning rate: " + str(learning_rate) + "\nIterations: " + str(iterations) + "\nDays per segment: " + str(days_per_segment))
     print_and_log("\nDevice: " + str("CUDA" if torch.cuda.is_available() else "CPU"))
-    input("\nPress enter to continue...")
 
     # Import data
     training_data, training_sets = import_data(training_files, days_per_segment)
