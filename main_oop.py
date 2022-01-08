@@ -7,6 +7,8 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 with open("log.txt", "w") as f:
     f.write("")
+from sklearn import preprocessing
+
 # Variable for time estimate
 time_divisor = 30
 
@@ -143,12 +145,6 @@ def Test_network(device, segments, model, loss_fn):
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
         print(f'Testing: {int((100/segments_count) * i)}%, Estimated time remaining: {time_remaining} Segment: {i}, Loss: {loss.item()}\r', end='')
-        
-        ### TEMPORARY (This is for testing) ###
-        # Zero gradients, perform a backward pass, and update the weights.
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
 
     print_and_log("Calculating loss percentage...")
     losspercent = 0
