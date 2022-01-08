@@ -1,0 +1,55 @@
+
+Training on: ['data-TSLA-small.csv', 'data-GME-small.csv', 'data-VOO-small.csv', 'data-AMD-small.csv']
+Testing on: ['data-AAPL.csv']
+Logging to: log.txt
+
+Input neurons: 35
+Output neurons: 1
+Hidden layers: 2
+Hidden neurons: 23
+
+Learning rate: 1e-05
+Iterations: 10
+Days per segment: 7
+
+Device: CUDA
+
+Importing data...
+File data-TSLA-small.csv imported.
+Normalizing...
+Done! (0.4267 seconds).
+File data-GME-small.csv imported.
+Normalizing...
+Done! (0.4525 seconds).
+File data-VOO-small.csv imported.
+Normalizing...
+Done! (0.4991 seconds).
+File data-AMD-small.csv imported.
+Normalizing...
+Done! (0.447 seconds).
+Importing data...
+File data-AAPL.csv imported.
+Normalizing...
+Done! (3.2256 seconds).
+
+Initializing network...
+Model: NeuralNetwork(
+  (linear_relu_stack): Sequential(
+    (0): Linear(in_features=35, out_features=23, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=23, out_features=23, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=23, out_features=23, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=23, out_features=1, bias=True)
+  )
+)
+Done! (1.6378 seconds).
+
+Training the network... (1968 segments to train on)
+Done! (42.6226 seconds).
+
+Testing the network... (2509 segments to test)
+Calculating loss percentage...
+Done! (6.8315 seconds).
+Loss percentage: 5.6282%

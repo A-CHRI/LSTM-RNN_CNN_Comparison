@@ -5,7 +5,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import matplotlib.pyplot as plt
-
+with open("log.txt", "w") as f:
+    f.write("")
 # Variable for time estimate
 time_divisor = 30
 
@@ -42,10 +43,10 @@ class NeuralNetwork(nn.Module):
 
 ### Methods ###
 # Print and log
-log_file = open("log.txt", "w")
 def print_and_log(string):
     print(string)
-    log_file.write(string + "\n")
+    with open("log.txt", "a") as f:
+        f.write(string + "\n")
 
 # Import data
 def import_data(filenames, days_per_segment):
@@ -152,9 +153,7 @@ def Test_network(device, segments, model, loss_fn):
     print_and_log("Calculating loss percentage...")
     losspercent = 0
     for i, e in enumerate(y_plot_pred):
-    
         target = segments[i][1]* np.std(test_data[0, :]) + np.mean(test_data[0, :])
-        print(str((e-target)/target))
         losspercent = losspercent + abs((e-target)/target)
     losspercent = (losspercent/len(y_plot_pred))*100
 
@@ -223,7 +222,7 @@ if __name__ == '__main__':
     y_plot_pred = Test_network(device, test_sets, model, loss_fn)
 
     # Flush the log file
-    log_file.flush()
+    #log_file.flush()
 
     # Plot the data
     Plot(Loss, y_plot_pred, test_sets)
