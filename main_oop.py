@@ -6,6 +6,9 @@ import torch.nn.functional as F
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
+# Variable for time estimate
+time_divisor = 30
+
 ### Parameters ###
 output_neurons = 1
 hidden_layers = 2 # No theoreticle reason to be more than 2
@@ -78,11 +81,11 @@ def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss)
         if i == 0:
             time_remaining = "--"
             time_estimate_start = time.perf_counter()
-        elif i % 10 == 0:
+        elif i % time_divisor == 0:
             time_estimate_end = time.perf_counter()
             time_estimate_elapsed = time_estimate_end - time_estimate_start
             time_estimate_start = time_estimate_end
-            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / 10) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / 10) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / 10))) + " second(s)"
+            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / time_divisor) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / time_divisor) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / time_divisor))) + " second(s)"
 
         # Initialize the tensors
         x = segments[i][0]
@@ -120,11 +123,11 @@ def Test_network(device, segments, model, loss_fn):
         if i == 0:
             time_remaining = "--"
             time_estimate_start = time.perf_counter()
-        elif i % 10 == 0:
+        elif i % time_divisor == 0:
             time_estimate_end = time.perf_counter()
             time_estimate_elapsed = time_estimate_end - time_estimate_start
             time_estimate_start = time_estimate_end
-            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / 10) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / 10) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / 10))) + " second(s)"
+            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / time_divisor) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / time_divisor) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / time_divisor))) + " second(s)"
 
         # Initialize the tensors
         x = segments[i][0]
@@ -194,7 +197,7 @@ if __name__ == '__main__':
     print_and_log("\nTraining on: " + str(training_files) + "\nTesting on: " + str(test_files) + "\nLogging to: log.txt")
     print_and_log("\nInput neurons: " + str(input_neurons) + "\nOutput neurons: " + str(output_neurons) + "\nHidden layers: " + str(hidden_layers) + "\nHidden neurons: " + str(hidden_neurons))
     print_and_log("\nLearning rate: " + str(learning_rate) + "\nIterations: " + str(iterations) + "\nDays per segment: " + str(days_per_segment))
-    print_and_log("\nDevice: " + str("CUDA" if torch.cuda.is_available() else "CPU"))
+    print_and_log("\nDevice: " + str("CUDA" if torch.cuda.is_available() else "CPU") + "\n")
 
     # Import data
     training_data, training_sets = import_data(training_files, days_per_segment)
