@@ -129,8 +129,8 @@ def Test_network(device, segments, model, loss_fn):
 
 
 if __name__ == '__main__':
-    for i in range(100):
-        learning_rate = 0.01/(2.5**i)
+    for i in range(200):
+        learning_rate = 0.01/(2**i)
         for j in range(5):
             # Import data
             training_data, training_sets = import_data(training_files, days_per_segment)
