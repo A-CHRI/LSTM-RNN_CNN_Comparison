@@ -110,11 +110,10 @@ def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss)
 
 # Test the network
 def Test_network(device, segments, model, loss_fn):
-    print_and_log("\nTesting the network... (" + str(len(test_sets)) + " segments to test)")
+    print_and_log("\nTesting the network... (" + str(len(segments)) + " segments to test)")
     timer_start = time.perf_counter()
 
     segments_count = len(segments)
-    predtest = np.zeros(len(segments))
     y_plot_pred = np.zeros(segments_count)
     for i in range(segments_count):
         # Estimate the remaining time
@@ -140,7 +139,6 @@ def Test_network(device, segments, model, loss_fn):
         # Compute and print loss
         loss = loss_fn(y_pred, outp)
         print(f'Testing: {int((100/segments_count) * i)}%, Estimated time remaining: {time_remaining} Segment: {i}, Loss: {loss.item()}\r', end='')
-        predtest[i] = loss.item()
         
         ### TEMPORARY (This is for testing) ###
         # Zero gradients, perform a backward pass, and update the weights.
@@ -150,9 +148,12 @@ def Test_network(device, segments, model, loss_fn):
 
     print_and_log("Calculating loss percentage...")
     losspercent = 0
-    for i, e in enumerate(predtest):
-        losspercent = losspercent + (test_sets[i][1]-e)/test_sets[i][1]
-    losspercent = losspercent/len(predtest)
+    for i, e in enumerate(y_plot_pred):
+    
+        target = segments[i][1]* np.std(test_data[0, :]) + np.mean(test_data[0, :])
+        print(str((e-target)/target))
+        losspercent = losspercent + abs((e-target)/target)
+    losspercent = (losspercent/len(y_plot_pred))*100
 
     timer_end = time.perf_counter()
     print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
