@@ -17,6 +17,11 @@ features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
 seq_len = 4 # look back period
 batch_size = 1
 l_rate = 0.000046
+n_epoch = 2
+
+### Training and test files ###
+training_files = ["data/data-TSLA-small.csv", "data/data-GME.csv", "data/data-VOO.csv", "data/data-AMD.csv"]
+test_files = ["data/data-AAPL.csv"]
 
 ### LSTM Model ###
 class LSTM(nn.Module):
@@ -50,7 +55,6 @@ class StockData(Dataset):
 
         self.scale_min = data[:, 0].min()
         self.scale_max = data[:, 0].max()
-        print(self.scale_min, self.scale_max)
 
         # Scale data
         self.scaler = MinMaxScaler(feature_range=(0, 1))
@@ -78,22 +82,55 @@ class StockData(Dataset):
     def __len__(self):
         return self.n_samples
 
+### Print and log ###
+def print_and_log(string):
+    print(string)
+    with open("log.txt", "a") as f:
+        f.write(string + "\n")
 
 if __name__ == '__main__':
+    # Clear the log
+    with open("log.txt", "w") as f:
+        f.write("")
+
+    # Print the parameter info
+    print_and_log(
+        "-"*80 + "\n" + f"{'LSTM Model':^80}" + "\n" + 
+        "-"*80 + "\n" + f"{'Files:':<80}" + "\n" + "-"*80 + 
+        f"\nTraining files: \n{training_files}" + "\n"
+        f"\nTesting files: \n{str(test_files)}" +
+        "\n" + "-"*80 + "\n" + f"{'Data info:':<40}{'Training info:':<40}" + "\n" + "-"*80 + 
+        f"\n{'Features:':<30}{features:<10}{'Learning rate:':<30}{l_rate:<10}" +
+        f"\n{'Sequence Length:':<30}{seq_len:<10}{'Epochs:':<30}{n_epoch:<10}" +
+        f"\n{'Batch Size:':<30}{batch_size:<10}{'Device:':<30}{'CUDA' if torch.cuda.is_available() else 'CPU':<10}" + "\n" + "-"*80
+    )
+    input("Press Enter to continue...")
+
     # Initialize model
+    print_and_log("\nInitializing model...")
+    timer_start = time.perf_counter()
+
     model = LSTM(features, n_hidden=24, n_output=1, n_layers=2).to(device)
     loss_fn = nn.MSELoss(reduction='sum')
     optimizer = torch.optim.Adam(model.parameters(), lr=l_rate)
 
+    timer_end = time.perf_counter()
+    print_and_log('Model initialized! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
+
     # Load the training dataset
+    print_and_log("\nLoading training dataset...")
+    timer_start = time.perf_counter()
+
     dataset_train = StockData('data/data-AAPL.csv')
     dataloader_train = DataLoader(dataset_train, batch_size=batch_size, shuffle=False)
 
-    loader = iter(dataloader_train)
-    x_train, y_train = next(loader)
+    timer_end = time.perf_counter()
+    print_and_log('Training dataset loaded! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
     # Training loop
-    n_epoch = 2
+    print_and_log("\nTraining...")
+    timer_start = time.perf_counter()
+
     samples = len(dataset_train)
     iterations = samples // batch_size
     for epoch in range(n_epoch):
@@ -110,17 +147,27 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
-            if (i+1) % 100 == 0:
-                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                    .format(epoch+1, n_epoch, i+1, iterations, loss.item()))
+            if (i+1) % 25 == 0:
+                print(f"{f'Epoch {epoch+1}/{n_epoch}':^20} | {f'Step {i+1}/{iterations}':^20} | {f'Loss: {loss.item()}':^20} \r", end="")
+
+    timer_end = time.perf_counter()
+    print_and_log('Training finished! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
     # Load the test dataset
+    print_and_log("\nLoading test dataset...")
+    timer_start = time.perf_counter()
+
     dataset_test = StockData('data/data-VOO.csv')
     dataloader_test = DataLoader(dataset_test, batch_size=batch_size, shuffle=False)
-
     y_pred_plot = np.array([])
 
+    timer_end = time.perf_counter()
+    print_and_log('Test dataset loaded! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
+
     # Test model
+    print_and_log("\nTesting...")
+    timer_start = time.perf_counter()
+
     for i, (x, y) in enumerate(dataloader_test):
         x = x.view(batch_size, seq_len, features)
         y = y.view(batch_size, 1)
@@ -130,10 +177,12 @@ if __name__ == '__main__':
         y_pred_plot = np.append(y_pred_plot, y_pred.cpu().detach().numpy())
         loss = loss_fn(y_pred, y)
 
-        if (i+1) % 100 == 0:
-            print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                .format(epoch+1, n_epoch, i+1, iterations, loss.item()))
+        if (i+1) % 25 == 0:
+            print(f"{f'Epoch {epoch+1}/{n_epoch}':^26} | {f'Step {i+1}/{iterations}':^26} | {f'Loss: {loss.item()}':^26} \r", end="")
 
+
+    timer_end = time.perf_counter()
+    print_and_log('Testing finished! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
     # Plot results
     plot_data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1))[::-1]
