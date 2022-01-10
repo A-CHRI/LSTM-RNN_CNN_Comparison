@@ -53,3 +53,381 @@ Testing the network... (2509 segments to test)
 Calculating loss percentage...
 Done! (6.8315 seconds).
 Loss percentage: 5.6282%
+
+Loading data...
+
+Data loaded in 0.02207970000000037 seconds
+
+Loading data...
+
+Done! (0.021724799999999878 seconds)
+
+Initializing network...
+
+Done! (0.001010700000000142 seconds)
+
+Loading data...
+
+Loading data...
+
+Done! (0.0231 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (0.0233 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Done! (0.0231 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Loading data...
+
+Done! (0.0234 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.706 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.6514 seconds)
+
+Initializing network...
+
+Done! (0.0012 seconds)
+
+Loading data...
+
+Done! (1.7013 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.7943 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.649 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Loading data...
+
+Loading data...
+
+Loading data...
+
+Loading data...
+
+Done! (1.8299 seconds)
+
+Initializing network...
+
+Done! (0.0012 seconds)
+
+Loading data...
+
+Done! (1.9521 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (3.4784 seconds)
+
+Initializing network...
+
+Done! (0.0014 seconds)
+
+Loading data...
+
+Done! (1.8558 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.7927 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
+
+Loading data...
+
+Done! (0.0237 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Done! (0.0253 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Done! (0.0257 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (0.0282 seconds)
+
+Initializing network...
+
+Done! (0.0012 seconds)
+
+Loading data...
+
+Done! (0.0286 seconds)
+
+Initializing network...
+
+Done! (0.0014 seconds)
+
+Loading data...
+
+Loading data...
+
+Loading data...
+
+Loading data...
+
+Loading data...
+
+Done! (0.0231 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Done! (0.0247 seconds)
+
+Initializing network...
+
+Done! (0.0013 seconds)
+
+Loading data...
+
+Done! (0.0232 seconds)
+
+Initializing network...
+
+Done! (0.0015 seconds)
+
+Loading data...
+
+Done! (0.0233 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Done! (0.022 seconds)
+
+Initializing network...
+
+Done! (0.0013 seconds)
+
+Loading data...
+
+Loading data...
+
+Loading data...
+
+Done! (1.9076 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
+
+Loading data...
+
+Done! (1.8841 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
+
+Loading data...
+
+Done! (1.8714 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.8736 seconds)
+
+Initializing network...
+
+Done! (0.0008 seconds)
+
+Loading data...
+
+Done! (1.8543 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
+
+Loading data...
+
+Done! (1.857 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Done! (1.8996 seconds)
+
+Initializing network...
+
+Done! (0.0014 seconds)
+
+Loading data...
+
+Done! (1.9353 seconds)
+
+Initializing network...
+
+Loading data...
+
+Done! (1.9064 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.8662 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.9203 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
+
+Loading data...
+
+Done! (1.8673 seconds)
+
+Initializing network...
+
+Done! (0.0016 seconds)
+
+Loading data...
+
+Done! (1.9423 seconds)
+
+Initializing network...
+
+Done! (0.0008 seconds)
+
+Loading data...
+
+Done! (1.8924 seconds)
+
+Initializing network...
+
+Done! (0.001 seconds)
+
+Loading data...
+
+Done! (1.9111 seconds)
+
+Initializing network...
+
+Done! (0.0008 seconds)
+
+Loading data...
+
+Done! (1.9634 seconds)
+
+Initializing network...
+
+Done! (0.0011 seconds)
+
+Loading data...
+
+Done! (1.8852 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
+
+Loading data...
+
+Done! (1.9018 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
+
+Loading data...
+
+Done! (1.8771 seconds)
+
+Initializing network...
+
+Done! (0.0009 seconds)
