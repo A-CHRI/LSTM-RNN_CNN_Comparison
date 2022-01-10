@@ -14,8 +14,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ### Parameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
-seq_len = 7 # 1 weeks data
+seq_len = 4 # look back period
 batch_size = 1
+l_rate = 0.000046
 
 ### LSTM Model ###
 class LSTM(nn.Module):
@@ -45,11 +46,15 @@ class LSTM(nn.Module):
 class StockData(Dataset):
     def __init__(self, data_file):
         # Load data
-        data = np.loadtxt(data_file, delimiter=',', skiprows=1, usecols=range(1,6))[::-1]
+        data = np.loadtxt(data_file, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+
+        self.scale_min = data[:, 0].min()
+        self.scale_max = data[:, 0].max()
+        print(self.scale_min, self.scale_max)
 
         # Scale data
-        scaler = MinMaxScaler(feature_range=(0, 1))
-        data_scaled = scaler.fit_transform(data)
+        self.scaler = MinMaxScaler(feature_range=(0, 1))
+        data_scaled = self.scaler.fit_transform(data)
 
         x_arr = []
         y_arr = []
@@ -75,48 +80,24 @@ class StockData(Dataset):
 
 
 if __name__ == '__main__':
-    # # Load data
-    # data_train = np.loadtxt('data-AAPL.csv', delimiter=',', skiprows=1, usecols=range(1,6))[::-1]
-    # data_test = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=range(1,6))[::-1]
-
-    # # Scale data
-    # scaler = MinMaxScaler(feature_range=(0, 1))
-    # data_train_scaled = scaler.fit_transform(data_train)
-    # data_test_scaled = scaler.transform(data_test)
-
-    # # Segment data
-    # data_train_segmented = []
-    # for i in range(len(data_train_scaled) - (seq_len + 1)):
-    #     x = data_train_scaled[i:i + seq_len]
-    #     y = data_train_scaled[i + seq_len, 0]
-    #     data_train_segmented.append([x, y])
-
-    # print(data_train_segmented[:5])
-
-    # # Create the tensors
-    # x_train = torch.tensor(np.array([i[0] for i in data_train_segmented]), dtype=torch.float).to(device)
-    # y_train = torch.tensor(np.array([i[1] for i in data_train_segmented]), dtype=torch.float).to(device)
-
-    # print(x_train[:5], y_train[:5])
-
     # Initialize model
     model = LSTM(features, n_hidden=24, n_output=1, n_layers=2).to(device)
     loss_fn = nn.MSELoss(reduction='sum')
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.Adam(model.parameters(), lr=l_rate)
 
-    # Load the dataset
-    dataset = StockData('data-AAPL.csv')
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    # Load the training dataset
+    dataset_train = StockData('data-AAPL.csv')
+    dataloader_train = DataLoader(dataset_train, batch_size=batch_size, shuffle=False)
 
-    loader = iter(dataloader)
+    loader = iter(dataloader_train)
     x_train, y_train = next(loader)
 
     # Training loop
     n_epoch = 2
-    samples = len(dataset)
+    samples = len(dataset_train)
     iterations = samples // batch_size
     for epoch in range(n_epoch):
-        for i, (x, y) in enumerate(dataloader):
+        for i, (x, y) in enumerate(dataloader_train):
             x = x.view(batch_size, seq_len, features)
             y = y.view(batch_size, 1)
 
@@ -133,23 +114,34 @@ if __name__ == '__main__':
                 print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
                     .format(epoch+1, n_epoch, i+1, iterations, loss.item()))
 
-    # Train model
-    # n_epoch = 5
-    # for epoch in range(n_epoch):
-    #     start = time.time()
-    #     total_loss = 0
-    #     for x, y in zip(x_train, y_train):
-    #         x = x.view(1, seq_len, features)
-    #         y = y.view(1, 1)
-    #         y_pred = model(x)
-    #         loss = loss_fn(y_pred, y)
-    #         total_loss += loss
-    #         optimizer.zero_grad()
-    #         loss.backward()
-    #         optimizer.step()
+    # Load the test dataset
+    dataset_test = StockData('data-VOO.csv')
+    dataloader_test = DataLoader(dataset_test, batch_size=batch_size, shuffle=False)
 
-    #     print('Epoch: {}, Loss: {:.6f}, Time: {:.4f}'.format(epoch + 1, total_loss, time.time() - start))
+    y_pred_plot = np.array([])
 
     # Test model
+    for i, (x, y) in enumerate(dataloader_test):
+        x = x.view(batch_size, seq_len, features)
+        y = y.view(batch_size, 1)
+
+        # Forward pass
+        y_pred = model(x)
+        y_pred_plot = np.append(y_pred_plot, y_pred.cpu().detach().numpy())
+        loss = loss_fn(y_pred, y)
+
+        if (i+1) % 100 == 0:
+            print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
+                .format(epoch+1, n_epoch, i+1, iterations, loss.item()))
+
 
     # Plot results
+    plot_data = np.loadtxt('data-VOO.csv', delimiter=',', skiprows=1, usecols=(1))[::-1]
+
+    scaler = MinMaxScaler(feature_range=(dataset_test.scale_min, dataset_test.scale_max))
+    y_pred_plot = scaler.fit_transform(y_pred_plot.reshape(-1, 1))
+
+    plt.plot(np.arange(len(plot_data)), plot_data, label='VOO')
+    plt.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Prediction')
+    plt.legend(loc='best')
+    plt.show()
