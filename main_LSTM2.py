@@ -26,9 +26,9 @@ class LSTM(nn.Module):
                             torch.zeros(1, 1, hidden_neurons))
 
     def forward(self, x):
-        lstm_out, self.hidden_layer = self.lstm(x.view(len(x), 1, -1), self.hidden_layer)
-        prediction = self.lstm(lstm_out.view(len(x), -1))
-        return prediction[-1]
+        out, _ = self.lstm(x, self.hidden_layer)
+        out = self.linear(out[0])
+        return out
 
 
 ### Method for loading and preprocessing data ###

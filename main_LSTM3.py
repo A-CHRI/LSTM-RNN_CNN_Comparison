@@ -14,7 +14,7 @@ features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
 batch_size = 7 # 1 weeks data (Seq_length = 7)
 lr_rate = 0.00001
 
-n_input = features * batch_size # Amount of input neurons = batch_size * features
+n_input = batch_size * features  # Amount of input neurons = batch_size * features
 h_size = int((2 / 3) * n_input) # Amoount of hidden neurons per hidden layer = (2/3) * input_size
 n_output = 1 # Output neurons
 n_layers = 2 # Amount of hidden layers
@@ -26,7 +26,7 @@ class LSTM(nn.Module):
         super(LSTM, self).__init__()
         self.n_layers = n_layers
         self.n_hidden = n_hidden
-        self.lstm = nn.LSTM(n_input, n_hidden, n_layers, batch_first=True) # x -> (batch_size, seq_len, input_size)
+        self.lstm = nn.LSTM(n_input, n_hidden, n_layers, batch_first=True) # n_input -> (batch_size, seq_len, input_size)
         self.linear = nn.Linear(n_hidden, n_output)
 
     def forward(self, input):
@@ -35,7 +35,11 @@ class LSTM(nn.Module):
         self.c_0 = torch.zeros(self.n_layers, input.size(0), self.n_hidden)
         
         # LSTM layer
-        out, _ = self.lstm(input.view(len(input), n_input, -1), (self.h_0, self.c_0)) # out -> (batch_size, seq_len, hidden_size)
+        print(input.size(-1))
+        input = input.view(batch_size, features, -1)
+        print(input.size(-1))
+        print(input)
+        out, _ = self.lstm(input, (self.h_0, self.c_0)) # out -> (batch_size, seq_len, hidden_size)
 
         # # Reshape the output
         # out = out[:, -1, :]
@@ -48,7 +52,9 @@ class LSTM(nn.Module):
 def create_batches(data, batch_size):
     data_batches = []
     for i in range(len(data) - (batch_size + 1)):
-        seq = torch.from_numpy(data[i:i + batch_size - 1]).to(device)
+        seq = torch.from_numpy(data[i:i + batch_size]).to(device)
+        if i == 0:
+            print(seq)
         pred = torch.tensor(data[i + batch_size, 0]).to(device)
         data_batches.append((seq, pred))
     return data_batches
@@ -91,8 +97,6 @@ if __name__ == '__main__':
     train_batches = create_batches(train_data, batch_size)
     test_batches = create_batches(test_data, batch_size)
 
-    print(train_batches[:5])
-
     timer_end = time.perf_counter()
     print_and_log("\nDone! (" + str(round(timer_end - timer_start, 4)) + " seconds)")
     # ---
@@ -116,6 +120,9 @@ if __name__ == '__main__':
 
     for epoch in range(n_epochs):
         for seq, pred in train_batches:
+            # Reshape the data
+            seq = seq.reshape(-1)
+            print(seq.size(-1))
             # Forward pass
             y_pred = model(seq)
             loss = loss_fn(y_pred, pred)
