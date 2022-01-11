@@ -12,7 +12,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 ### Parameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
 seq_len = 7 # look back period 
-batch_size = 64 # Must be power of 2
+batch_size = 64 # Must be a power of 2
 l_rate = 0.00005
 n_epoch = 128 # Must be divisible by 8
 n_hidden = 24 # 2/3 input neurons
