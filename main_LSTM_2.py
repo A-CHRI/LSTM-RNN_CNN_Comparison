@@ -19,7 +19,7 @@ n_epoch = 128 # Must be divisible by 8
 
 ### Training and test files ###
 training_files = ["data/data-TSLA.csv", "data/data-GME.csv", "data/data-AAPL.csv", "data/data-AMD.csv"]
-test_file = ["data/data-VOO.csv"]
+test_files = ["data/data-VOO.csv"]
 
 ### LSTM Model ###
 class LSTM(nn.Module):
@@ -105,12 +105,13 @@ if __name__ == '__main__':
         "-"*80 + "\n" + f"{'LSTM Model':^80}" + "\n" + 
         "-"*80 + "\n" + f"{'Files:':<80}" + "\n" + "-"*80 + 
         f"\nTraining files: \n{training_files}" + "\n"
-        f"\nTesting files: \n{str(test_file)}" +
+        f"\nTesting files: \n{str(test_files)}" +
         "\n" + "-"*80 + "\n" + f"{'Data info:':<40}{'Training info:':<40}" + "\n" + "-"*80 + 
         f"\n{'Features:':<30}{features:<10}{'Learning rate:':<30}{l_rate:<10}" +
         f"\n{'Sequence Length:':<30}{seq_len:<10}{'Epochs:':<30}{n_epoch:<10}" +
         f"\n{'Batch Size:':<30}{batch_size:<10}{'Device:':<30}{'CUDA' if torch.cuda.is_available() else 'CPU':<10}" + "\n" + "-"*80
     )
+    input("Press Enter to continue...")
 
     # Initialize model
     print_and_log("\nInitializing model...")
@@ -167,7 +168,7 @@ if __name__ == '__main__':
     print_and_log("\nLoading test dataset...")
     timer_start = time.perf_counter()
 
-    dataset_test = StockData(test_file)
+    dataset_test = StockData(test_files)
     dataloader_test = DataLoader(dataset_test, batch_size=batch_size, shuffle=False)
     y_pred_plot = np.array([])
 
@@ -194,27 +195,13 @@ if __name__ == '__main__':
     timer_end = time.perf_counter()
     print_and_log('\nTesting finished! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
-    ### Plotting ###
-    # Set up plot for the data
-    fig, (loss_plot, pred_plot) = plt.subplots(2, 1)
-    fig.suptitle('Loss and Network Output')
-
-    # Set up the loss plot
-    loss_plot.set_ylabel("Loss function")
-    loss_plot.plot(Loss, label="Loss function")
-    loss_plot.legend()
-    loss_plot.grid(True)
-
-    # set up the test plot
-    pred_plot.set_ylabel("Neural network test")
+    # Plot results
     plot_data = np.loadtxt('data/data-VOO.csv', delimiter=',', skiprows=1, usecols=(1))[::-1]
-    pred_plot.plot(np.arange(len(plot_data)), np.array(plot_data), label='Test files daily closing price')
 
-    # Prediction data
     y_pred_plot = dataset_test.scaler.inverse_transform(y_pred_plot.reshape(-1, 1))
-    pred_plot.plot(np.arange(len(y_pred_plot)), y_pred_plot, label='Prediction')
 
-    # Plotting
-    pred_plot.grid(True)
-    pred_plot.legend(loc='best')
+    plt.plot(np.arange(len(plot_data)), plot_data, label='VOO')
+    plt.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Prediction')
+    plt.grid(True)
+    plt.legend(loc='best')
     plt.show()
