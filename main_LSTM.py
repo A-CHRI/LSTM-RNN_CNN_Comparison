@@ -201,7 +201,7 @@ if __name__ == '__main__':
     ### Plotting ###
     # Set up plot for the data
     fig, (loss_plot, pred_plot) = plt.subplots(2, 1)
-    fig.suptitle('Loss and Network Output')
+    fig.suptitle('LSTM - Loss and Network Output')
 
     # Set up the loss plot
     loss_plot.set_ylabel("Loss function")
