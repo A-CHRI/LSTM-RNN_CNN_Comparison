@@ -35,25 +35,28 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 ### Neural Network ###
 ### LSTM Model ###
-class CNN(nn.Module):
-    def __init__(self, n_input, n_hidden, n_output):
-        self.n_input = n_input
+class LSTM(nn.Module):
+    def __init__(self, n_input, n_hidden, n_output, n_layers):
+        super(LSTM, self).__init__()
         self.n_hidden = n_hidden
-        self.n_output = n_output
-        super(CNN, self).__init__()
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(n_input, n_hidden),
-            nn.ReLU(),
-            nn.Linear(n_hidden, n_hidden),
-            nn.ReLU(),
-            nn.Linear(n_hidden, n_hidden),
-            nn.ReLU(),
-            nn.Linear(n_hidden, n_output),
-        )
+        self.n_layers = n_layers
+        self.lstm = nn.LSTM(n_input, n_hidden, n_layers, batch_first=True) # n_input -> (batch_size, seq_len, input_size)
+        self.linear = nn.Linear(n_hidden * seq_len, n_output)
 
-    def forward(self, x):
-        x = x.reshape(len(x), -1)
-        return self.linear_relu_stack(x)
+
+    def forward(self, input):
+        # Initialize hidden and cell states
+        h_0 = torch.zeros(self.n_layers, input.size(0), self.n_hidden).to(device)
+        c_0 = torch.zeros(self.n_layers, input.size(0), self.n_hidden).to(device)
+
+        # LSTM layer
+        input = input.view(-1, seq_len, features)
+        out, _ = self.lstm(input, (h_0, c_0))
+
+        # Linear layer
+        out = out.reshape(len(input), -1)
+        out = self.linear(out)
+        return out
 
 class StockData(Dataset):
     def __init__(self, data_files):
@@ -108,13 +111,13 @@ def print_and_log(string):
 
 if __name__ == '__main__':
     # Clear the log
-    with open("learning_rate_data_CNN.txt", "w") as f:
+    with open("learning_rate_data_LSTM.txt", "w") as f:
         f.write("")
     for i in range(200):
         learning_rate = 0.01/(2**i)
 
 
-        model = CNN(features, n_hidden, n_output, n_layers=2).to(device)
+        model = LSTM(features, n_hidden, n_output, n_layers=2).to(device)
         loss_fn = nn.MSELoss(reduction='sum')
         optimizer = torch.optim.Adam(model.parameters(), lr=l_rate)
 
