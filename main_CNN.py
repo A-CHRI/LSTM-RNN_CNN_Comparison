@@ -2,167 +2,198 @@ import numpy as np
 import time
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-with open("log.txt", "w") as f:
-    f.write("")
-from sklearn import preprocessing
 
-# Variable for time estimate
-time_divisor = 30
-
-### Parameters ###
-output_neurons = 1
-hidden_layers = 2 # No theoreticle reason to be more than 2
-learning_rate = 0.00001
-iterations = 10 #500000
-days_per_segment = 7 # Usually 21 for stable stocks, and lower the more volatile
-input_neurons = days_per_segment * 5
-hidden_neurons = int((2 / 3) * input_neurons) # Usually 2/3 the size of the input neurons
-
-training_files = ["data/data-TSLA-small.csv", "data/data-GME-small.csv", "data/data-VOO-small.csv", "data/data-AMD-small.csv"]
-test_files = ["data/data-AAPL.csv"]
-
+### Device configuration ###
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-### Neural Network ###
-class NeuralNetwork(nn.Module):
-    def __init__(self):
-        super(NeuralNetwork, self).__init__()
+### Parameters ###
+features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
+seq_len = 7 # look back period 
+batch_size = 64 # Must be power of 2
+l_rate = 0.00005
+n_epoch = 128 # Must be divisible by 8
+n_hidden = 24 # 2/3 input neurons
+
+n_input = features * seq_len
+n_output = 1
+
+### Training and test files ###
+training_files = ["data/data-TSLA.csv", "data/data-GME.csv", "data/data-VOO.csv", "data/data-AMD.csv"]
+test_file = ["data/data-AAPL.csv"]
+
+### CNN Model ###
+class CNN(nn.Module):
+    def __init__(self, n_input, n_hidden, n_output):
+        self.n_input = n_input
+        self.n_hidden = n_hidden
+        self.n_output = n_output
+        super(CNN, self).__init__()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(input_neurons, hidden_neurons),
+            nn.Linear(n_input, n_hidden),
             nn.ReLU(),
-            nn.Linear(hidden_neurons, hidden_neurons),
+            nn.Linear(n_hidden, n_hidden),
             nn.ReLU(),
-            nn.Linear(hidden_neurons, hidden_neurons),
+            nn.Linear(n_hidden, n_hidden),
             nn.ReLU(),
-            nn.Linear(hidden_neurons, output_neurons),
-        ).double()
+            nn.Linear(n_hidden, n_output),
+        )
 
     def forward(self, x):
+        x = x.reshape(len(x), -1)
         return self.linear_relu_stack(x)
 
-### Methods ###
-# Print and log
+### Dataset ###
+class StockData(Dataset):
+    def __init__(self, data_files):
+        # Load data
+        x_arr = []
+        y_arr = []
+        for i in data_files:
+            data = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1,2,3,4,5))[::-1]
+
+            for i in range(len(data) - (seq_len + 1)):
+                x = data[i:i + seq_len, :]
+                y = data[i + seq_len, 0]
+
+                # Store data in the dataset
+                x_arr.append(x)
+                y_arr.append(y)
+
+        # Scale data
+        self.scaler = StandardScaler()
+
+        # Flatten data
+        x_arr = np.reshape(x_arr, (-1, 5))
+        y_arr = np.reshape(y_arr, (-1, 1))
+
+        # Scale data
+        data_scaled_x = self.scaler.fit_transform(x_arr)
+        data_scaled_y = self.scaler.fit_transform(y_arr)
+
+        # Reshape data
+        data_scaled_x = np.reshape(data_scaled_x, (-1, seq_len, features))
+        data_scaled_y = np.reshape(data_scaled_y, (-1, 1))
+        
+        # Set the tensors
+        self.x = torch.tensor(data_scaled_x, dtype=torch.float).to(device)
+        self.y = torch.tensor(data_scaled_y, dtype=torch.float).to(device)
+
+        self.n_samples = self.x.shape[0]
+    
+    def __getitem__(self, index):
+        return self.x[index], self.y[index]
+
+    def __len__(self):
+        return self.n_samples
+
+### Print and log ###
 def print_and_log(string):
     print(string)
     with open("log.txt", "a") as f:
         f.write(string + "\n")
 
-# Import data
-def import_data(filenames, days_per_segment):
-    print_and_log("Importing data...")
-    set = []
-    for i in filenames:
-        dataImport = np.loadtxt(i, delimiter=',', skiprows=1, usecols=(1, 2, 3, 4, 5))[::-1]
-        data = np.copy(np.transpose(dataImport))
-        print_and_log("File " + str(i) + " imported.\nNormalizing...")
-        timer_start = time.perf_counter()
+if __name__ == '__main__':
+    # Clear the log
+    with open("log.txt", "w") as f:
+        f.write("")
 
-        for l in range (len(data[0]) - (days_per_segment + 1)):
-        # Calculate x segment
-            x = np.zeros(5 * days_per_segment)
-            for j in range(5):
-                for k in range(days_per_segment):
-                    x[j * days_per_segment + k] = (data[j, k + l] - np.mean(data[j,:])) / np.std(data[j,:])
-            # Calculate y segment
-            y = (data[0, l + days_per_segment] - np.mean(data[0, :])) / np.std(data[0,:])
-            set.append([x, y])
-        timer_end = time.perf_counter()
-        print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
-    return data, set
+# Print the parameter info
+    print_and_log(
+        "-"*80 + "\n" + f"{'CNN Model':^80}" + "\n" + 
+        "-"*80 + "\n" + f"{'Files:':<80}" + "\n" + "-"*80 + 
+        f"\nTraining files: \n{training_files}" + "\n"
+        f"\nTesting files: \n{str(test_file)}" +
+        "\n" + "-"*80 + "\n" + f"{'Data info:':<40}{'Training info:':<40}" + "\n" + "-"*80 + 
+        f"\n{'Features:':<30}{features:<10}{'Learning rate:':<30}{l_rate:<10}" +
+        f"\n{'Sequence Length:':<30}{seq_len:<10}{'Epochs:':<30}{n_epoch:<10}" +
+        f"\n{'Batch Size:':<30}{batch_size:<10}{'Device:':<30}{'CUDA' if torch.cuda.is_available() else 'CPU':<10}" + "\n" + "-"*80
+    )
 
-# Train the network
-def Train_network(iterations, device, segments, model, loss_fn, optimizer, Loss):
-    print_and_log("\nTraining the network... (" + str(len(training_sets)) + " segments to train on)")
+    # Initialize model
+    print_and_log("\nInitializing model...")
     timer_start = time.perf_counter()
 
-    segments_count = len(segments)
-    for i in range(segments_count):
-        # Estimate the remaining time
-        if i == 0:
-            time_remaining = "--"
-            time_estimate_start = time.perf_counter()
-        elif i % time_divisor == 0:
-            time_estimate_end = time.perf_counter()
-            time_estimate_elapsed = time_estimate_end - time_estimate_start
-            time_estimate_start = time_estimate_end
-            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / time_divisor) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / time_divisor) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / time_divisor))) + " second(s)"
+    model = CNN(n_input, n_hidden, n_output).to(device)
+    loss_fn = nn.MSELoss(reduction='sum')
+    optimizer = torch.optim.Adam(model.parameters(), lr=l_rate)
 
-        # Initialize the tensors
-        x = segments[i][0]
-        inp = torch.tensor(x, device=device).double()
+    timer_end = time.perf_counter()
+    print_and_log('Model initialized! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
-        y = [segments[i][1]]
-        outp = torch.tensor(y, device=device).double()
+    # Load the data training set
+    print_and_log("\nLoading training dataset...")
+    timer_start = time.perf_counter()
 
-        for j in range(iterations):
+    dataset_train = StockData(training_files)
+    dataloader_train = DataLoader(dataset_train, batch_size=batch_size, shuffle=True)
+
+    timer_end = time.perf_counter()
+    print_and_log('Training dataset loaded! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
+
+    # Training loop
+    print_and_log("\nTraining...")
+    timer_start = time.perf_counter()
+
+    Loss = []
+
+    samples = len(dataset_train)
+    iterations = samples // batch_size
+    for epoch in range(n_epoch):
+        for i, (x, y) in enumerate(dataloader_train):
             # Forward pass
-            y_pred = model(inp)
+            y_pred = model(x)
+            loss = loss_fn(y_pred, y)
+            Loss.append(loss.item())
 
-            # Compute and print loss
-            loss = loss_fn(y_pred, outp)
-            print(f'Training: {int((100/segments_count) * i)}%, Estimated time left: {time_remaining} Segment: {i}, Iteration:{j}, Loss: {loss.item()}\r', end='')
-            Loss[j*(i+1)] = loss.item()
-
-            # Zero gradients, perform a backward pass, and update the weights.
+            # Backward and optimize
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
-    timer_end = time.perf_counter()
-    print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
+            if (i+1) % 25 == 0:
+                loss_sci = "{:.4e}".format(loss.item())
+                print(f"{f'Epoch {epoch+1}/{n_epoch}':^20} | {f'Step {i+1}/{iterations}':^20} | {f'Loss: {loss_sci}':^20} \r", end="")
 
-# Test the network
-def Test_network(device, segments, model, loss_fn):
-    print_and_log("\nTesting the network... (" + str(len(segments)) + " segments to test)")
+    timer_end = time.perf_counter()
+    print_and_log('\nTraining finished! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
+
+    # Load the test dataset
+    print_and_log("\nLoading test dataset...")
     timer_start = time.perf_counter()
 
-    segments_count = len(segments)
-    y_plot_pred = np.zeros(segments_count)
-    for i in range(segments_count):
-        # Estimate the remaining time
-        if i == 0:
-            time_remaining = "--"
-            time_estimate_start = time.perf_counter()
-        elif i % time_divisor == 0:
-            time_estimate_end = time.perf_counter()
-            time_estimate_elapsed = time_estimate_end - time_estimate_start
-            time_estimate_start = time_estimate_end
-            time_remaining = str(int((time_estimate_elapsed * ((segments_count - i) / time_divisor) / 60))) + " minute(s)" if time_estimate_elapsed * ((segments_count - i) / time_divisor) > 60 else str(int(time_estimate_elapsed * ((segments_count - i) / time_divisor))) + " second(s)"
-
-        # Initialize the tensors
-        x = segments[i][0]
-        inp = torch.tensor(x, device=device).double()
-
-        y = [segments[i][1]]
-        outp = torch.tensor(y, device=device).double()
-
-        y_pred = model(inp)
-        y_plot_pred[i] = y_pred.cpu().detach().numpy() * np.std(test_data[0, :]) + np.mean(test_data[0, :])
-
-        # Compute and print loss
-        loss = loss_fn(y_pred, outp)
-        print(f'Testing: {int((100/segments_count) * i)}%, Estimated time remaining: {time_remaining} Segment: {i}, Loss: {loss.item()}\r', end='')
-
-    print_and_log("Calculating loss percentage...")
-    losspercent = 0
-    for i, e in enumerate(y_plot_pred):
-        target = segments[i][1]* np.std(test_data[0, :]) + np.mean(test_data[0, :])
-        losspercent = losspercent + abs((e-target)/target)
-    losspercent = (losspercent/len(y_plot_pred))*100
+    dataset_test = StockData(test_file)
+    dataloader_test = DataLoader(dataset_test, batch_size=batch_size, shuffle=False)
+    y_pred_plot = np.array([])
 
     timer_end = time.perf_counter()
-    print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
-    print_and_log("Loss percentage: " + str(round(losspercent, 4)) + "%")
+    print_and_log('Test dataset loaded! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
-    return y_plot_pred
+    # Test model
+    print_and_log("\nTesting...")
+    timer_start = time.perf_counter()
 
-# Plotting
-def Plot(Loss, y_plot_pred, test_sets):
+    for i, (x, y) in enumerate(dataloader_test):
+        x = x.view(-1, seq_len, features)
+        y = y.view(-1, 1)
+
+        # Forward pass
+        y_pred = model(x)
+        y_pred_plot = np.append(y_pred_plot, y_pred.cpu().detach().numpy())
+        loss = loss_fn(y_pred, y)
+
+        if (i+1) % 25 == 0:
+            loss_sci = "{:.4e}".format(loss.item())
+            print(f"{f'Epoch {epoch+1}/{n_epoch}':^20} | {f'Step {i+1}/{iterations}':^20} | {f'Loss: {loss_sci}':^20} \r", end="")
+
+    timer_end = time.perf_counter()
+    print_and_log('\nTesting finished! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
+
+    ### Plotting ###
     # Set up plot for the data
-    fig, (loss_plot, network_plot) = plt.subplots(2, 1)
+    fig, (loss_plot, pred_plot) = plt.subplots(2, 1)
     fig.suptitle('Loss and Network Output')
 
     # Set up the loss plot
@@ -172,53 +203,15 @@ def Plot(Loss, y_plot_pred, test_sets):
     loss_plot.grid(True)
 
     # set up the test plot
-    network_plot.set_ylabel("Neural network test")
-    x_plot_test = np.arange(len(test_data[0]))
-    y_plot_test = np.array(test_data[0])
-    network_plot.plot(x_plot_test, y_plot_test, label='Test files daily closing price')
+    pred_plot.set_ylabel("Neural network test")
+    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
+    pred_plot.plot(np.arange(len(plot_data)), np.array(plot_data), label='Test files daily closing price')
 
     # Prediction data
-    x_plot_pred = np.arange(len(test_sets)) + days_per_segment
-    network_plot.plot(x_plot_pred, y_plot_pred, label='Prediction')
+    y_pred_plot = dataset_test.scaler.inverse_transform(y_pred_plot.reshape(-1, 1))
+    pred_plot.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Prediction')
 
     # Plotting
-    network_plot.grid(True)
-    network_plot.legend()
+    pred_plot.grid(True)
+    pred_plot.legend(loc='best')
     plt.show()
-
-
-if __name__ == '__main__':
-    # Print the parameter info
-    print_and_log("\nTraining on: " + str(training_files) + "\nTesting on: " + str(test_files) + "\nLogging to: log.txt")
-    print_and_log("\nInput neurons: " + str(input_neurons) + "\nOutput neurons: " + str(output_neurons) + "\nHidden layers: " + str(hidden_layers) + "\nHidden neurons: " + str(hidden_neurons))
-    print_and_log("\nLearning rate: " + str(learning_rate) + "\nIterations: " + str(iterations) + "\nDays per segment: " + str(days_per_segment))
-    print_and_log("\nDevice: " + str("CUDA" if torch.cuda.is_available() else "CPU") + "\n")
-
-    # Import data
-    training_data, training_sets = import_data(training_files, days_per_segment)
-    test_data, test_sets = import_data(test_files, days_per_segment)
-
-    # Create the neural network
-    print_and_log("\nInitializing network...")
-    timer_start = time.perf_counter()
-
-    model = NeuralNetwork().to(device)
-    loss_fn = nn.MSELoss(reduction='sum')
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-    print_and_log("Model: " + str(model))
-    Loss = np.zeros(iterations * len(training_sets))
-
-    timer_end = time.perf_counter()
-    print_and_log("Done! (" + str(round(timer_end - timer_start, 4)) + " seconds).")
-
-    # Train the neural network
-    Train_network(iterations, device, training_sets, model, loss_fn, optimizer, Loss)
-
-    # Test the neural network
-    y_plot_pred = Test_network(device, test_sets, model, loss_fn)
-
-    # Flush the log file
-    #log_file.flush()
-
-    # Plot the data
-    Plot(Loss, y_plot_pred, test_sets)

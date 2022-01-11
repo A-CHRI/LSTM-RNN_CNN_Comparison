@@ -1,11 +1,10 @@
 import numpy as np
+import time
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-import time
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-
 
 ### Device configuration ###
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -14,12 +13,16 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
 seq_len = 7 # look back period
 batch_size = 64 # Must be a power of 2
-l_rate = 0.0001
-n_epoch = 128 # Must be divisible by 8
+l_rate = 0.00005
+n_epoch = 512 # Must be divisible by 8
+n_hidden = 24 # 2/3 input neurons
+
+n_input = features * seq_len
+n_output = 1
 
 ### Training and test files ###
-training_files = ["data/data-TSLA.csv", "data/data-GME.csv", "data/data-AAPL.csv", "data/data-AMD.csv"]
-test_file = ["data/data-VOO.csv"]
+training_files = ["data/data-TSLA.csv", "data/data-GME.csv", "data/data-VOO.csv", "data/data-AMD.csv"]
+test_file = ["data/data-AAPL.csv"]
 
 ### LSTM Model ###
 class LSTM(nn.Module):
@@ -116,7 +119,7 @@ if __name__ == '__main__':
     print_and_log("\nInitializing model...")
     timer_start = time.perf_counter()
 
-    model = LSTM(features, n_hidden=24, n_output=1, n_layers=2).to(device)
+    model = LSTM(features, n_hidden, n_output, n_layers=2).to(device)
     loss_fn = nn.MSELoss(reduction='sum')
     optimizer = torch.optim.Adam(model.parameters(), lr=l_rate)
 
@@ -207,12 +210,12 @@ if __name__ == '__main__':
 
     # set up the test plot
     pred_plot.set_ylabel("Neural network test")
-    plot_data = np.loadtxt('data/data-VOO.csv', delimiter=',', skiprows=1, usecols=(1))[::-1]
+    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
     pred_plot.plot(np.arange(len(plot_data)), np.array(plot_data), label='Test files daily closing price')
 
     # Prediction data
     y_pred_plot = dataset_test.scaler.inverse_transform(y_pred_plot.reshape(-1, 1))
-    pred_plot.plot(np.arange(len(y_pred_plot)), y_pred_plot, label='Prediction')
+    pred_plot.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Prediction')
 
     # Plotting
     pred_plot.grid(True)
