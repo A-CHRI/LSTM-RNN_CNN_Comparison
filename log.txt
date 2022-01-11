@@ -1,32 +1,34 @@
+--------------------------------------------------------------------------------
+                                   LSTM Model                                   
+--------------------------------------------------------------------------------
+Files:                                                                          
+--------------------------------------------------------------------------------
+Training files: 
+['data/data-TSLA.csv', 'data/data-GME.csv', 'data/data-VOO.csv', 'data/data-AMD.csv']
 
-Training on: ['data/data-TSLA-small.csv', 'data/data-GME-small.csv', 'data/data-VOO-small.csv', 'data/data-AMD-small.csv']
-Testing on: ['data/data-AAPL.csv']
-Logging to: log.txt
+Testing files: 
+['data/data-AAPL.csv']
+--------------------------------------------------------------------------------
+Data info:                              Training info:                          
+--------------------------------------------------------------------------------
+Features:                     5         Learning rate:                5e-05     
+Sequence Length:              7         Epochs:                       128       
+Batch Size:                   64        Device:                       CUDA      
+--------------------------------------------------------------------------------
 
-Input neurons: 35
-Output neurons: 1
-Hidden layers: 2
-Hidden neurons: 23
+Initializing model...
+Model initialized! (2.0613 seconds )
 
-Learning rate: 1e-05
-Iterations: 10
-Days per segment: 7
+Loading training dataset...
+Training dataset loaded! (0.1068 seconds )
 
-Device: CUDA
+Training...
 
-Importing data...
-File data/data-TSLA-small.csv imported.
-Normalizing...
-Done! (0.5406 seconds).
-File data/data-GME-small.csv imported.
-Normalizing...
-Done! (0.5402 seconds).
-File data/data-VOO-small.csv imported.
-Normalizing...
-Done! (0.5419 seconds).
-File data/data-AMD-small.csv imported.
-Normalizing...
-Done! (0.5417 seconds).
-Importing data...
-File data/data-AAPL.csv imported.
-Normalizing...
+Training finished! (114.7955 seconds )
+
+Loading test dataset...
+Test dataset loaded! (0.0314 seconds )
+
+Testing...
+
+Testing finished! (0.0714 seconds )
