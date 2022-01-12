@@ -1,7 +1,6 @@
 import numpy as np
 import time
 import torch
-from torch._C import dtype
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
@@ -12,11 +11,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ### Parameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
-seq_len = 7 # look back period
+seq_len = 7 # length of window
 batch_size = 64 # Must be a power of 2
-l_rate = 0.00005
-n_epoch = 128 # Must be divisible by 8
-n_hidden = 24 # 2/3 input neurons
+l_rate = 0.0025
+n_epoch = 512 # Must be divisible by 8
+n_hidden = 256
+dropout = 0.2 # Dropout rate
 
 n_input = features * seq_len
 n_output = 2
@@ -31,7 +31,7 @@ class LSTM(nn.Module):
         super(LSTM, self).__init__()
         self.n_hidden = n_hidden
         self.n_layers = n_layers
-        self.lstm = nn.LSTM(n_input, n_hidden, n_layers, batch_first=True) # n_input -> (batch_size, seq_len, input_size)
+        self.lstm = nn.LSTM(n_input, n_hidden, n_layers, dropout=dropout, batch_first=True) # n_input -> (batch_size, seq_len, input_size)
         self.linear = nn.Linear(n_hidden * seq_len, n_output) # n_hidden * seq_len -> (batch_size, n_output)
 
 
