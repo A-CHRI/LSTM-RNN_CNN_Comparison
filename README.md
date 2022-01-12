@@ -6,7 +6,7 @@ Comparison between a Long Short-Term Memory Recurrent Neural Network (LSTM-RNN),
 ## Models
 ### LSTM RNN
  - LSTM layer
- - - Hidden cells: 70
+  - Hidden cells: 70
  - - Hidden layers: 2
  - - Dropout: 0.2
  - Linear layer
