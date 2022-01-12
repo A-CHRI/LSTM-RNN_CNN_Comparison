@@ -1,5 +1,6 @@
 import numpy as np
 import time
+from numpy.core.numeric import outer
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -7,46 +8,43 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
 ### Device configuration ###
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-### Parameters ###
+### Hyperparameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
 seq_len = 7 # length of window
 batch_size = 64 # Must be a power of 2
-l_rate = 0.0025
-n_epoch = 512 # Must be divisible by 8
-n_hidden = 256
-dropout = 0.2 # Dropout rate
+l_rate = 0.00001 #3.05e-7
+n_epoch = 128 # Must be divisible by 8
+n_hidden = 24 # 2/3 input neurons
 
 n_input = features * seq_len
 n_output = 2
 
 ### Training and test files ###
-training_files = ["data/data-TSLA.csv", "data/data-GME.csv", "data/data-VOO.csv", "data/data-AMD.csv"]
-test_file = ["data/data-AAPL.csv"]
+training_files = ["data/TSLA.csv", "data/GME.csv", "data/VOO.csv", "data/AMD.csv"]
+test_file = ["data/AAPL.csv"]
 
-### LSTM Model ###
-class LSTM(nn.Module):
-    def __init__(self, n_input, n_hidden, n_output, n_layers):
-        super(LSTM, self).__init__()
+### CNN Model ###
+class CNN(nn.Module):
+    def __init__(self, n_input, n_hidden, n_output):
+        self.n_input = n_input
         self.n_hidden = n_hidden
-        self.n_layers = n_layers
-        self.lstm = nn.LSTM(n_input, n_hidden, n_layers, dropout=dropout, batch_first=True) # n_input -> (batch_size, seq_len, input_size)
-        self.linear = nn.Linear(n_hidden * seq_len, n_output) # n_hidden * seq_len -> (batch_size, n_output)
+        self.n_output = n_output
+        super(CNN, self).__init__()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(n_input, n_hidden),
+            nn.ReLU(),
+            nn.Linear(n_hidden, n_hidden),
+            nn.ReLU(),
+            nn.Linear(n_hidden, n_hidden),
+            nn.ReLU(),
+            nn.Linear(n_hidden, n_output),
+        )
 
-
-    def forward(self, input):
-        # Initialize hidden and cell states
-        h_0 = torch.zeros(self.n_layers, input.size(0), self.n_hidden).to(device)
-        c_0 = torch.zeros(self.n_layers, input.size(0), self.n_hidden).to(device)
-
-        # LSTM layer
-        input = input.view(-1, seq_len, features)
-        out, _ = self.lstm(input, (h_0, c_0))
-
-        # Linear layer
-        out = out.reshape(len(input), -1)
-        out = self.linear(out)
+    def forward(self, x):
+        x = x.reshape(len(x), -1)
+        out = self.linear_relu_stack(x)
         return out
 
 ### Dataset ###
@@ -104,9 +102,9 @@ if __name__ == '__main__':
     with open("log.txt", "w") as f:
         f.write("")
 
-    # Print the parameter info
+# Print the parameter info
     print_and_log(
-        "-"*80 + "\n" + f"{'LSTM Model':^80}" + "\n" + 
+        "-"*80 + "\n" + f"{'CNN Model - High & Low':^80}" + "\n" + 
         "-"*80 + "\n" + f"{'Files:':<80}" + "\n" + "-"*80 + 
         f"\nTraining files: \n{training_files}" + "\n"
         f"\nTesting files: \n{str(test_file)}" +
@@ -120,14 +118,14 @@ if __name__ == '__main__':
     print_and_log("\nInitializing model...")
     timer_start = time.perf_counter()
 
-    model = LSTM(features, n_hidden, n_output, n_layers=2).to(device)
+    model = CNN(n_input, n_hidden, n_output).to(device)
     loss_fn = nn.MSELoss(reduction='sum')
     optimizer = torch.optim.Adam(model.parameters(), lr=l_rate)
 
     timer_end = time.perf_counter()
     print_and_log('Model initialized! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
-    # Load the training dataset
+    # Load the data training set
     print_and_log("\nLoading training dataset...")
     timer_start = time.perf_counter()
 
@@ -241,5 +239,5 @@ if __name__ == '__main__':
     bottom.grid(True)
 
     plt.get_current_fig_manager().window.state('zoomed')
-    plt.savefig("plot_LSTM.png")
+    plt.savefig("plot_CNN_HL.png")
     plt.show()

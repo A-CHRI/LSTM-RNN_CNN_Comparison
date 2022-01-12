@@ -1,5 +1,6 @@
 import numpy as np
 import time
+from numpy.core.numeric import outer
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -9,11 +10,11 @@ import matplotlib.pyplot as plt
 ### Device configuration ###
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-### Parameters ###
+### Hyperparameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
-seq_len = 7 # look back period 
+seq_len = 7 # length of window
 batch_size = 64 # Must be a power of 2
-l_rate = 3.05*(10**(-7))
+l_rate = 0.00001 #3.05e-7
 n_epoch = 128 # Must be divisible by 8
 n_hidden = 24 # 2/3 input neurons
 
@@ -21,8 +22,8 @@ n_input = features * seq_len
 n_output = 1
 
 ### Training and test files ###
-training_files = ["data/data-TSLA.csv", "data/data-GME.csv", "data/data-VOO.csv", "data/data-AMD.csv"]
-test_file = ["data/data-AAPL.csv"]
+training_files = ["data/TSLA.csv", "data/GME.csv", "data/VOO.csv", "data/AMD.csv"]
+test_file = ["data/AAPL.csv"]
 
 ### CNN Model ###
 class CNN(nn.Module):
@@ -43,7 +44,8 @@ class CNN(nn.Module):
 
     def forward(self, x):
         x = x.reshape(len(x), -1)
-        return self.linear_relu_stack(x)
+        out = self.linear_relu_stack(x)
+        return out
 
 ### Dataset ###
 class StockData(Dataset):
@@ -75,7 +77,7 @@ class StockData(Dataset):
 
         # Reshape data
         data_scaled_x = np.reshape(data_scaled_x, (-1, seq_len, features))
-        data_scaled_y = np.reshape(data_scaled_y, (-1, 1))
+        data_scaled_y = np.reshape(data_scaled_y, (-1, n_output))
         
         # Set the tensors
         self.x = torch.tensor(data_scaled_x, dtype=torch.float).to(device)
@@ -102,7 +104,7 @@ if __name__ == '__main__':
 
 # Print the parameter info
     print_and_log(
-        "-"*80 + "\n" + f"{'CNN Model':^80}" + "\n" + 
+        "-"*80 + "\n" + f"{'CNN Model - Close price':^80}" + "\n" + 
         "-"*80 + "\n" + f"{'Files:':<80}" + "\n" + "-"*80 + 
         f"\nTraining files: \n{training_files}" + "\n"
         f"\nTesting files: \n{str(test_file)}" +
@@ -143,6 +145,9 @@ if __name__ == '__main__':
     iterations = samples // batch_size
     for epoch in range(n_epoch):
         for i, (x, y) in enumerate(dataloader_train):
+            x = x.view(-1, seq_len, features)
+            y = y.view(-1, n_output)
+
             # Forward pass
             y_pred = model(x)
             loss = loss_fn(y_pred, y)
@@ -177,7 +182,7 @@ if __name__ == '__main__':
 
     for i, (x, y) in enumerate(dataloader_test):
         x = x.view(-1, seq_len, features)
-        y = y.view(-1, 1)
+        y = y.view(-1, n_output)
 
         # Forward pass
         y_pred = model(x)
@@ -192,27 +197,41 @@ if __name__ == '__main__':
     print_and_log('\nTesting finished! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
     ### Plotting ###
-    # Set up plot for the data
-    fig, (loss_plot, pred_plot) = plt.subplots(2, 1)
-    fig.suptitle('CNN - Loss and Network Output')
+    fig = plt.figure(figsize=(10, 5))
+    sub = fig.subfigures(2, 1)
+    (top_left, top_right) = sub[0].subplots(1, 2)
+    bottom = sub[1].subplots(1, 1)
+
+    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
+    y_pred_plot = dataset_test.scaler.inverse_transform(y_pred_plot.reshape(-1, n_output))
 
     # Set up the loss plot
-    loss_plot.set_ylabel("Loss function")
-    loss_plot.plot(Loss, label="Loss function")
-    loss_plot.legend()
-    loss_plot.grid(True)
+    top_left.plot(Loss, label="Loss function")
+    top_left.legend()
+    top_left.grid(True)
 
-    # set up the test plot
-    pred_plot.set_ylabel("Neural network test")
-    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
-    pred_plot.plot(np.arange(len(plot_data)), np.array(plot_data), label='Test files daily closing price')
+    # Set up the zoomed plot
+    top_right.plot(np.arange(len(plot_data)), plot_data, label='Close price', color='darkgray')
 
+    top_right.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Predicted close', linestyle='--', color='green')
+
+    top_right.axis(
+        xmin=len(plot_data) - 30, xmax=len(plot_data),
+        ymin=np.min(y_pred_plot[-30:]) - 20, ymax=np.max(y_pred_plot[-30:]) + 20
+        ) # Zoom in on the last 30 days
+    top_right.legend()
+    top_right.grid(True)
+
+    ### Bottom plot
+    # Real data
+    bottom.plot(np.arange(len(plot_data)), plot_data, label='Close price', color='darkgray')
+    
     # Prediction data
-    y_pred_plot = dataset_test.scaler.inverse_transform(y_pred_plot.reshape(-1, 1))
-    pred_plot.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Prediction')
+    bottom.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Predicted close', linestyle='--', color='green')
 
-    # Plotting
-    pred_plot.grid(True)
-    pred_plot.legend(loc='best')    
-    plt.savefig("plot_CNN.png")
+    bottom.legend()
+    bottom.grid(True)
+
+    plt.get_current_fig_manager().window.state('zoomed')
+    plt.savefig("plot_CNN_C.png")
     plt.show()
