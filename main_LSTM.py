@@ -241,4 +241,5 @@ if __name__ == '__main__':
     bottom.grid(True)
 
     plt.get_current_fig_manager().window.state('zoomed')
+    plt.savefig("plot_LSTM.png")
     plt.show()
