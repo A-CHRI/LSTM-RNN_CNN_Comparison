@@ -11,11 +11,11 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ### Hyperparameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
-seq_len = 7 # length of window
+seq_len = 21 # length of window
 batch_size = 64 # Must be a power of 2
 l_rate = 0.0025
 n_epoch = 128 # Must be divisible by 8
-n_hidden = 24
+n_hidden = int((2/3)*(features * seq_len)) # 2/3 input neurons
 dropout = 0.2 # Dropout rate
 
 n_input = features * seq_len
@@ -113,7 +113,8 @@ if __name__ == '__main__':
         "\n" + "-"*80 + "\n" + f"{'Data info:':<40}{'Training info:':<40}" + "\n" + "-"*80 + 
         f"\n{'Features:':<30}{features:<10}{'Learning rate:':<30}{l_rate:<10}" +
         f"\n{'Sequence Length:':<30}{seq_len:<10}{'Epochs:':<30}{n_epoch:<10}" +
-        f"\n{'Batch Size:':<30}{batch_size:<10}{'Device:':<30}{'CUDA' if torch.cuda.is_available() else 'CPU':<10}" + "\n" + "-"*80
+        f"\n{'Batch Size:':<30}{batch_size:<10}{'Device:':<30}{'CUDA' if torch.cuda.is_available() else 'CPU':<10}" + 
+        f"\n{'Output:':<30}{n_output:<10}{'Hidden cells:':<30}{n_hidden:<10}" + "\n" + "-"*80
     )
 
     # Initialize model
