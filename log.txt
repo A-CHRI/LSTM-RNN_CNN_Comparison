@@ -11,24 +11,24 @@ Testing files:
 --------------------------------------------------------------------------------
 Data info:                              Training info:                          
 --------------------------------------------------------------------------------
-Features:                     5         Learning rate:                5e-05     
-Sequence Length:              7         Epochs:                       128       
+Features:                     5         Learning rate:                0.0025    
+Sequence Length:              21        Epochs:                       128       
 Batch Size:                   64        Device:                       CUDA      
 --------------------------------------------------------------------------------
 
 Initializing model...
-Model initialized! (2.0613 seconds )
+Model initialized! (1.7938 seconds )
 
 Loading training dataset...
-Training dataset loaded! (0.1068 seconds )
+Training dataset loaded! (0.119 seconds )
 
 Training...
 
-Training finished! (114.7955 seconds )
+Training finished! (74.8696 seconds )
 
 Loading test dataset...
-Test dataset loaded! (0.0314 seconds )
+Test dataset loaded! (0.0312 seconds )
 
 Testing...
 
-Testing finished! (0.0714 seconds )
+Testing finished! (0.0604 seconds )

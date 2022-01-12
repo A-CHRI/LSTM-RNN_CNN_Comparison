@@ -12,9 +12,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ### Parameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
-seq_len = 7 # look back period
+seq_len = 21 # look back period
 batch_size = 64 # Must be a power of 2
-l_rate = 0.00005
+l_rate = 0.0025
 n_epoch = 128 # Must be divisible by 8
 n_hidden = 24 # 2/3 input neurons
 
@@ -241,4 +241,5 @@ if __name__ == '__main__':
     bottom.grid(True)
 
     plt.get_current_fig_manager().window.state('zoomed')
+    plt.savefig("plot_LSTM.png")
     plt.show()
