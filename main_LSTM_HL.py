@@ -96,12 +96,12 @@ class StockData(Dataset):
 ### Print and log ###
 def print_and_log(string):
     print(string)
-    with open("out/log.txt", "a") as f:
+    with open("out/log_LSTM_HL.txt", "a") as f:
         f.write(string + "\n")
 
 if __name__ == '__main__':
     # Clear the log
-    with open("out/log.txt", "w") as f:
+    with open("out/log_LSTM_HL.txt", "w") as f:
         f.write("")
 
     # Print the parameter info
