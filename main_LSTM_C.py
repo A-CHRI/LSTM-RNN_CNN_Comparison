@@ -246,6 +246,11 @@ if __name__ == '__main__':
     bottom.legend()
     bottom.grid(True)
 
+    sub[0].suptitle('LSTM - Closing price', fontsize=16)
+    top_left.set_title('Loss function')
+    top_right.set_title('Predicted closing price (last 30 days)')
+    bottom.set_title('Predicted closing price')
+
     plt.get_current_fig_manager().window.state('zoomed')
     plt.savefig("out/plot_LSTM_C.png")
     plt.show()

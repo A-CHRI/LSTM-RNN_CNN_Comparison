@@ -245,9 +245,14 @@ if __name__ == '__main__':
     # Prediction data
     bottom.plot(np.arange(len(y_pred_plot[:, 0])) + seq_len, y_pred_plot[:, 0], label='Predicted High', linestyle='--', color='green')
     bottom.plot(np.arange(len(y_pred_plot[:, 0])) + seq_len, y_pred_plot[:, 1], label='Predicted Low', linestyle='--', color='crimson')
-    # pred_plot.fill_between(np.arange(len(y_pred_plot[:, 0])) + seq_len, y_pred_plot[:, 0], y_pred_plot[:, 1], color='steelblue', alpha=0.2)
+
     bottom.legend()
     bottom.grid(True)
+
+    sub[0].suptitle('CNN - High & Low price', fontsize=16)
+    top_left.set_title('Loss function')
+    top_right.set_title('Predicted closing price (last 30 days)')
+    bottom.set_title('Predicted closing price')
 
     plt.get_current_fig_manager().window.state('zoomed')
     plt.savefig("out/plot_CNN_HL.png")
