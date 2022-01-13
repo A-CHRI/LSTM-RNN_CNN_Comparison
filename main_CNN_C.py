@@ -93,12 +93,12 @@ class StockData(Dataset):
 ### Print and log ###
 def print_and_log(string):
     print(string)
-    with open("log.txt", "a") as f:
+    with open("out/log.txt", "a") as f:
         f.write(string + "\n")
 
 if __name__ == '__main__':
     # Clear the log
-    with open("log.txt", "w") as f:
+    with open("out/log.txt", "w") as f:
         f.write("")
 
 # Print the parameter info
@@ -233,5 +233,5 @@ if __name__ == '__main__':
     bottom.grid(True)
 
     plt.get_current_fig_manager().window.state('zoomed')
-    plt.savefig("plot_CNN_C.png")
+    plt.savefig("out/plot_CNN_C.png")
     plt.show()

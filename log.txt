@@ -1,34 +1,26 @@
 --------------------------------------------------------------------------------
-                                   LSTM Model                                   
+                            LSTM Model - Close price                            
 --------------------------------------------------------------------------------
 Files:                                                                          
 --------------------------------------------------------------------------------
 Training files: 
-['data/data-TSLA.csv', 'data/data-GME.csv', 'data/data-VOO.csv', 'data/data-AMD.csv']
+['data/TSLA.csv', 'data/GME.csv', 'data/VOO.csv', 'data/AMD.csv']
 
 Testing files: 
-['data/data-AAPL.csv']
+['data/AAPL.csv']
 --------------------------------------------------------------------------------
 Data info:                              Training info:                          
 --------------------------------------------------------------------------------
 Features:                     5         Learning rate:                0.0025    
-Sequence Length:              21        Epochs:                       128       
+Sequence Length:              7         Epochs:                       128       
 Batch Size:                   64        Device:                       CUDA      
+Output:                       1         Hidden cells:                 23        
 --------------------------------------------------------------------------------
 
 Initializing model...
-Model initialized! (1.7938 seconds )
+Model initialized! (2.0701 seconds )
 
 Loading training dataset...
-Training dataset loaded! (0.119 seconds )
+Training dataset loaded! (0.1062 seconds )
 
 Training...
-
-Training finished! (74.8696 seconds )
-
-Loading test dataset...
-Test dataset loaded! (0.0312 seconds )
-
-Testing...
-
-Testing finished! (0.0604 seconds )

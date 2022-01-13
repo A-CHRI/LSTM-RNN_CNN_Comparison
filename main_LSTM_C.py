@@ -11,7 +11,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ### Hyperparameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
-seq_len = 7 # length of window
+seq_len = 21 # length of window
 batch_size = 64 # Must be a power of 2
 l_rate = 0.0025
 n_epoch = 128 # Must be divisible by 8
@@ -96,12 +96,12 @@ class StockData(Dataset):
 ### Print and log ###
 def print_and_log(string):
     print(string)
-    with open("log.txt", "a") as f:
+    with open("out/log.txt", "a") as f:
         f.write(string + "\n")
 
 if __name__ == '__main__':
     # Clear the log
-    with open("log.txt", "w") as f:
+    with open("out/log.txt", "w") as f:
         f.write("")
 
     # Print the parameter info
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     top_right.plot(np.arange(len(y_pred_plot)) + seq_len, y_pred_plot, label='Predicted close', linestyle='--', color='green')
 
     top_right.axis(
-        xmin=len(plot_data) - 30, xmax=len(plot_data[:, 0]),
+        xmin=len(plot_data) - 30, xmax=len(plot_data),
         ymin=np.min(y_pred_plot[-30:]) - 20, ymax=np.max(y_pred_plot[-30:]) + 20
         ) # Zoom in on the last 30 days
     top_right.legend()
@@ -236,5 +236,5 @@ if __name__ == '__main__':
     bottom.grid(True)
 
     plt.get_current_fig_manager().window.state('zoomed')
-    plt.savefig("plot_LSTM_C.png")
+    plt.savefig("out/plot_LSTM_C.png")
     plt.show()
