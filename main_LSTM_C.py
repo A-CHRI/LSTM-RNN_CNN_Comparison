@@ -199,6 +199,18 @@ if __name__ == '__main__':
     timer_end = time.perf_counter()
     print_and_log('\nTesting finished! (' + str(round(timer_end - timer_start, 4)) + ' seconds )')
 
+    ### Percentual deviation from target ###
+    losspercent = 0
+    y_pred_plot = dataset_test.scaler.inverse_transform(y_pred_plot.reshape(-1, 1))
+    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
+    targets = plot_data[seq_len:]
+    for i, e in enumerate(y_pred_plot):
+        target = targets[i]
+        losspercent = losspercent + abs((e-target)/target)
+    losspercent = (losspercent/len(y_pred_plot))*100
+    print_and_log(f"The mean percentual deviation from targets of this model is {losspercent[0]}%")
+
+
     ### Plotting ###
     fig = plt.figure(figsize=(10, 5))
     sub = fig.subfigures(2, 1)
@@ -206,7 +218,6 @@ if __name__ == '__main__':
     bottom = sub[1].subplots(1, 1)
 
     plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
-    y_pred_plot = dataset_test.scaler.inverse_transform(y_pred_plot.reshape(-1, n_output))
 
     # Set up the loss plot
     top_left.plot(Loss, label="Loss function")
