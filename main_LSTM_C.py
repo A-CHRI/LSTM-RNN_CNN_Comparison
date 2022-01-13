@@ -208,7 +208,16 @@ if __name__ == '__main__':
         target = targets[i]
         losspercent = losspercent + abs((e-target)/target)
     losspercent = (losspercent/len(y_pred_plot))*100
-    print_and_log(f"The mean percentual deviation from targets of this model is {losspercent[0]}%")
+    print_and_log(f"\nThe mean percentual deviation from targets of this model is {losspercent[0]}%")
+
+    # Logs the last 30 days of the test dataset
+    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
+    plot_data_30 = plot_data[-30:]
+    pred_data_30 = y_pred_plot[-30:]
+    print_and_log("\nTest dataset last 30 days:" + "\n" + "-"*80)
+    print_and_log(f"{'Actual Close':<20}{'Predicted Close':<20}")
+    for i, e in enumerate(plot_data_30):
+        print(f"{round(e, 4):<20}{round(pred_data_30[i][0], 4):<20}")
 
 
     ### Plotting ###
