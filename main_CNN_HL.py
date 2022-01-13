@@ -11,7 +11,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ### Hyperparameters ###
 features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
-seq_len = 7 # length of window
+seq_len = 21 # length of window
 batch_size = 64 # Must be a power of 2
 l_rate = 0.00001 #3.05e-7
 n_epoch = 128 # Must be divisible by 8
@@ -93,12 +93,12 @@ class StockData(Dataset):
 ### Print and log ###
 def print_and_log(string):
     print(string)
-    with open("log.txt", "a") as f:
+    with open("out/log.txt", "a") as f:
         f.write(string + "\n")
 
 if __name__ == '__main__':
     # Clear the log
-    with open("log.txt", "w") as f:
+    with open("out/log.txt", "w") as f:
         f.write("")
 
 # Print the parameter info
@@ -245,10 +245,15 @@ if __name__ == '__main__':
     # Prediction data
     bottom.plot(np.arange(len(y_pred_plot[:, 0])) + seq_len, y_pred_plot[:, 0], label='Predicted High', linestyle='--', color='green')
     bottom.plot(np.arange(len(y_pred_plot[:, 0])) + seq_len, y_pred_plot[:, 1], label='Predicted Low', linestyle='--', color='crimson')
-    # pred_plot.fill_between(np.arange(len(y_pred_plot[:, 0])) + seq_len, y_pred_plot[:, 0], y_pred_plot[:, 1], color='steelblue', alpha=0.2)
+
     bottom.legend()
     bottom.grid(True)
 
+    sub[0].suptitle('CNN - High & Low price', fontsize=16)
+    top_left.set_title('Loss function')
+    top_right.set_title('Predicted closing price (last 30 days)')
+    bottom.set_title('Predicted closing price')
+
     plt.get_current_fig_manager().window.state('zoomed')
-    plt.savefig("plot_CNN_HL.png")
+    plt.savefig("out/plot_CNN_HL.png")
     plt.show()
