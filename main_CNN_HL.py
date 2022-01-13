@@ -14,7 +14,7 @@ features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
 seq_len = 21 # length of window
 batch_size = 64 # Must be a power of 2
 l_rate = 0.00001 #3.05e-7
-n_epoch = 128 # Must be divisible by 8
+n_epoch = 512 # Must be divisible by 8
 n_hidden = int((2/3)*(features * seq_len)) # 2/3 input neurons
 
 n_input = features * seq_len
