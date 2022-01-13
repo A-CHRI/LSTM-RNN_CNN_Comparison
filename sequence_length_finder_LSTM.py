@@ -166,4 +166,4 @@ for q in range(30):
                 losspercent = losspercent + abs((e[0]-target1)/target1)
                 losspercent = losspercent + abs((e[1]-target1)/target1)
             losspercent = (losspercent/(len(y_pred_plot)*len(y_pred_plot[0])))*100
-            print_and_log({losspercent} + " " + str(seq_len))
+            print_and_log(str(losspercent) + " " + str(seq_len))
