@@ -20,7 +20,7 @@ if __name__ == '__main__':
         features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
         batch_size = 64 # Must be a power of 2
         l_rate = 0.00001
-        n_epoch = 16 # Must be divisible by 8
+        n_epoch = 512 # Must be divisible by 8
         n_hidden = int((2/3)*(features * seq_len)) # 2/3 input neurons
 
         n_input = features * seq_len
@@ -103,7 +103,7 @@ if __name__ == '__main__':
                 f.write(string + "\n")
 
 
-        with open("sequence_length_finder_CNN.txt", "w") as f:
+        with open("sequence_length_finder_CNN.txt", "a") as f:
             f.write("")
         for q in range(5):
             model = CNN(n_input, n_hidden, n_output).to(device)
@@ -171,7 +171,7 @@ if __name__ == '__main__':
                 losspercent = losspercent + abs((e[1]-target1)/target1)
             losspercent = (losspercent/(len(y_pred_plot)*len(y_pred_plot[0])))*100
             print(losspercent)
-            print_and_log(str(round(losspercent)) + " " + str(seq_len))
+            print_and_log(str(losspercent) + " " + str(seq_len))
                 
 
 
