@@ -1,0 +1,23 @@
+--------------------------------------------------------------------------------
+                            LSTM Model - High & Low                             
+--------------------------------------------------------------------------------
+Files:                                                                          
+--------------------------------------------------------------------------------
+Training files: 
+['data/TSLA.csv', 'data/GME.csv', 'data/VOO.csv', 'data/AMD.csv']
+
+Testing files: 
+['data/AAPL.csv']
+--------------------------------------------------------------------------------
+Data info:                              Training info:                          
+--------------------------------------------------------------------------------
+Features:                     5         Learning rate:                0.0025    
+Sequence Length:              21        Epochs:                       512       
+Batch Size:                   64        Device:                       CUDA      
+Output:                       2         Hidden cells:                 70        
+--------------------------------------------------------------------------------
+
+Initializing model...
+Model initialized! (1.3773 seconds )
+
+Loading training dataset...

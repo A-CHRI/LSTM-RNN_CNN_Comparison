@@ -22,7 +22,7 @@ n_input = features * seq_len
 n_output = 2
 
 ### Training and test files ###
-training_files = ["data/TSLA.csv", "data/GME.csv", "data/VOO.csv", "data/AMD.csv"]
+training_files = ["data/AMZN.csv", "data/BRK.csv", "data/FB.csv", "data/GOOG.csv","data/GOOGL.csv","data/JPM.csv","data/MSFT.csv","data/NVDA.csv","data/TSLA.csv","data/VOO.csv"]
 test_file = ["data/AAPL.csv"]
 
 ### LSTM Model ###
@@ -96,12 +96,12 @@ class StockData(Dataset):
 ### Print and log ###
 def print_and_log(string):
     print(string)
-    with open("out/log_LSTM_HL.txt", "a") as f:
+    with open("out/log.txt", "a") as f:
         f.write(string + "\n")
 
 if __name__ == '__main__':
     # Clear the log
-    with open("out/log_LSTM_HL.txt", "w") as f:
+    with open("out/log.txt", "w") as f:
         f.write("")
 
     # Print the parameter info
@@ -210,23 +210,16 @@ if __name__ == '__main__':
         losspercent = losspercent + abs((e[0]-target1)/target1)
         losspercent = losspercent + abs((e[1]-target1)/target1)
     losspercent = (losspercent/(len(y_pred_plot)*len(y_pred_plot[0])))*100
-    print_and_log(f"\nThe mean percentual deviation from targets of this model is {losspercent}%")
+    print_and_log(f"The mean percentual deviation from targets of this model is {losspercent}%")
 
-    # Logs the last 30 days of the test dataset
-    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(4,5))[::-1]
-    plot_data_30 = plot_data[-30:]
-    pred_data_30 = y_pred_plot[-30:]
-    print_and_log("\nTest dataset last 30 days:" + "\n" + "-"*80)
-    print_and_log(f"{'Actual high':<20}{'Actual Low':<20}{'Predicted high':<20}{'Predicted low':<20}")
-    for i, e in enumerate(plot_data_30):
-        print(f"{round(e[0],4):<20}{round(e[1],4):<20}{round(pred_data_30[i][0],4):<20}{round(pred_data_30[i][1],4):<20}")
-    
 
     ### Plotting ###
     fig = plt.figure(figsize=(10, 5))
     sub = fig.subfigures(2, 1)
     (top_left, top_right) = sub[0].subplots(1, 2)
     bottom = sub[1].subplots(1, 1)
+
+    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(4,5))[::-1]
 
     # Set up the loss plot
     top_left.plot(Loss, label="Loss function")

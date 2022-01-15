@@ -25,7 +25,7 @@ for q in range(30):
     n_output = 2
 
     ### Training and test files ###
-    training_files = ["data/TSLA.csv", "data/GME.csv", "data/VOO.csv", "data/AMD.csv"]
+    training_files = ["data/AMZN.csv", "data/BRK.csv", "data/FB.csv", "data/GOOG.csv","data/GOOGL.csv","data/JPM.csv","data/MSFT.csv","data/NVDA.csv","data/TSLA.csv","data/VOO.csv"]
     test_file = ["data/AAPL.csv"]
 
     ### LSTM Model ###

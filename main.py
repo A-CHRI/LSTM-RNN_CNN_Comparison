@@ -20,8 +20,8 @@ def print_and_log(string):
     log_file.write(string + "\n")
 
 # Filenames
-training_files = ["data-AAPL-small.csv", "data-TSLA-small.csv", "data-VOO-small.csv", "data-AMD-small.csv"]
-test_files = ["data-GME.csv"]
+training_files = ["data/AMZN.csv", "data/BRK.csv", "data/FB.csv", "data/GOOG.csv","data/GOOGL.csv","data/JPM.csv","data/MSFT.csv","data/NVDA.csv","data/TSLA.csv","data/VOO.csv"]
+test_files = ["data/AAPL.csv"]
 
 # Print the parameter info
 print_and_log("\nTraining on: " + str(training_files) + "\nTesting on: " + str(test_files) + "\nLogging to: log.txt")

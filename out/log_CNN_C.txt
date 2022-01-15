@@ -1,0 +1,41 @@
+--------------------------------------------------------------------------------
+                            CNN Model - Close price                             
+--------------------------------------------------------------------------------
+Files:                                                                          
+--------------------------------------------------------------------------------
+Training files: 
+['data/AMZN.csv', 'data/BRK.csv', 'data/FB.csv', 'data/GOOG.csv', 'data/GOOGL.csv', 'data/JPM.csv', 'data/MSFT.csv', 'data/NVDA.csv', 'data/TSLA.csv', 'data/VOO.csv']
+
+Testing files: 
+['data/AAPL.csv']
+--------------------------------------------------------------------------------
+Data info:                              Training info:                          
+--------------------------------------------------------------------------------
+Features:                     5         Learning rate:                1e-05     
+Sequence Length:              21        Epochs:                       512       
+Batch Size:                   64        Device:                       CUDA      
+Output:                       1         Hidden cells:                 70        
+--------------------------------------------------------------------------------
+
+Initializing model...
+Model initialized! (0.9971 seconds )
+
+Loading training dataset...
+Training dataset loaded! (0.1841 seconds )
+
+Training...
+
+Training finished! (316.0288 seconds )
+
+Loading test dataset...
+Test dataset loaded! (0.003 seconds )
+
+Testing...
+
+Testing finished! (0.003 seconds )
+
+The mean percentual deviation from targets of this model is 1.800744970033847%
+
+Test dataset last 30 days:
+--------------------------------------------------------------------------------
+Actual Close        Predicted Close     

@@ -19,7 +19,7 @@ n_input = features * seq_len
 n_output = 1
 
 ### Training and test files ###
-training_files = ["data/data-TSLA.csv", "data/data-GME.csv", "data/data-VOO.csv", "data/data-AMD.csv"]
+training_files = ["data/AMZN.csv", "data/BRK.csv", "data/FB.csv", "data/GOOG.csv","data/GOOGL.csv","data/JPM.csv","data/MSFT.csv","data/NVDA.csv","data/TSLA.csv","data/VOO.csv"]
 test_file = ["data/data-AAPL.csv"]
 ### Parameters ###
 output_neurons = 1

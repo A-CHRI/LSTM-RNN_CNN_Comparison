@@ -1,0 +1,41 @@
+--------------------------------------------------------------------------------
+                            LSTM Model - Close price                            
+--------------------------------------------------------------------------------
+Files:                                                                          
+--------------------------------------------------------------------------------
+Training files: 
+['data/AMZN.csv', 'data/BRK.csv', 'data/FB.csv', 'data/GOOG.csv', 'data/GOOGL.csv', 'data/JPM.csv', 'data/MSFT.csv', 'data/NVDA.csv', 'data/TSLA.csv', 'data/VOO.csv']
+
+Testing files: 
+['data/AAPL.csv']
+--------------------------------------------------------------------------------
+Data info:                              Training info:                          
+--------------------------------------------------------------------------------
+Features:                     5         Learning rate:                0.0025    
+Sequence Length:              21        Epochs:                       512       
+Batch Size:                   64        Device:                       CUDA      
+Output:                       1         Hidden cells:                 70        
+--------------------------------------------------------------------------------
+
+Initializing model...
+Model initialized! (1.4099 seconds )
+
+Loading training dataset...
+Training dataset loaded! (0.1733 seconds )
+
+Training...
+
+Training finished! (541.3266 seconds )
+
+Loading test dataset...
+Test dataset loaded! (0.0031 seconds )
+
+Testing...
+
+Testing finished! (0.0073 seconds )
+
+The mean percentual deviation from targets of this model is 4.56780863154096%
+
+Test dataset last 30 days:
+--------------------------------------------------------------------------------
+Actual Close        Predicted Close     
