@@ -14,7 +14,7 @@ features = 5 # Close, Volume, Open, High, Low (Input_size = 5)
 seq_len = 21 # length of window
 batch_size = 64 # Must be a power of 2
 l_rate = 0.00001 #3.05e-7
-n_epoch = 128 # Must be divisible by 8
+n_epoch = 512 # Must be divisible by 8
 n_hidden = int((2/3)*(features * seq_len)) # 2/3 input neurons
 
 n_input = features * seq_len
@@ -93,12 +93,12 @@ class StockData(Dataset):
 ### Print and log ###
 def print_and_log(string):
     print(string)
-    with open("out/log.txt", "a") as f:
+    with open("out/log_CNN_C.txt", "a") as f:
         f.write(string + "\n")
 
 if __name__ == '__main__':
     # Clear the log
-    with open("out/log.txt", "w") as f:
+    with open("out/log_CNN_C.txt", "w") as f:
         f.write("")
 
 # Print the parameter info
@@ -205,15 +205,23 @@ if __name__ == '__main__':
         target = targets[i]
         losspercent = losspercent + abs((e-target)/target)
     losspercent = (losspercent/len(y_pred_plot))*100
-    print_and_log(f"The mean percentual deviation from targets of this model is {losspercent[0]}%")
+    print_and_log(f"\nThe mean percentual deviation from targets of this model is {losspercent[0]}%")
+
+    # Logs the last 30 days of the test dataset
+    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
+    plot_data_30 = plot_data[-30:]
+    pred_data_30 = y_pred_plot[-30:]
+    print_and_log("\nTest dataset last 30 days:" + "\n" + "-"*80)
+    print_and_log(f"{'Actual Close':<20}{'Predicted Close':<20}")
+    for i, e in enumerate(plot_data_30):
+        print(f"{round(e, 4):<20}{round(pred_data_30[i][0], 4):<20}")
+
 
     ### Plotting ###
     fig = plt.figure(figsize=(10, 5))
     sub = fig.subfigures(2, 1)
     (top_left, top_right) = sub[0].subplots(1, 2)
     bottom = sub[1].subplots(1, 1)
-
-    plot_data = np.loadtxt(test_file[0], delimiter=',', skiprows=1, usecols=(1))[::-1]
 
     # Set up the loss plot
     top_left.plot(Loss, label="Loss function")
