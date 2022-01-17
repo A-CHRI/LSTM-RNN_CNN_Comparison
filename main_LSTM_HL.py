@@ -22,7 +22,7 @@ n_input = features * seq_len
 n_output = 2
 
 ### Training and test files ###
-training_files = ["data/AMZN.csv", "data/BRK.csv", "data/FB.csv", "data/GOOG.csv","data/GOOGL.csv","data/JPM.csv","data/MSFT.csv","data/NVDA.csv","data/TSLA.csv","data/VOO.csv"]
+training_files = ["data/AMZN.csv", "data/BRK.csv", "data/FB.csv", "data/GOOG.csv","data/GOOGL.csv","data/JPM.csv","data/MSFT.csv","data/NVDA.csv","data/TSLA.csv", "data/VOO.csv"]
 test_file = ["data/AAPL.csv"]
 
 ### LSTM Model ###
@@ -96,12 +96,12 @@ class StockData(Dataset):
 ### Print and log ###
 def print_and_log(string):
     print(string)
-    with open("out/log.txt", "a") as f:
+    with open("out/log_LSTM_HL.txt", "a") as f:
         f.write(string + "\n")
 
 if __name__ == '__main__':
     # Clear the log
-    with open("out/log.txt", "w") as f:
+    with open("out/log_LSTM_HL.txt", "w") as f:
         f.write("")
 
     # Print the parameter info
