@@ -221,7 +221,7 @@ if __name__ == '__main__':
 
 
     ### Plotting ###
-    fig = plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(16, 9))
     sub = fig.subfigures(2, 1)
     (top_left, top_right) = sub[0].subplots(1, 2)
     bottom = sub[1].subplots(1, 1)

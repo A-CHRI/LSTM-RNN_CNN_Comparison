@@ -1,0 +1,41 @@
+--------------------------------------------------------------------------------
+                             CNN Model - High & Low                             
+--------------------------------------------------------------------------------
+Files:                                                                          
+--------------------------------------------------------------------------------
+Training files: 
+['data/AMZN.csv', 'data/BRK.csv', 'data/FB.csv', 'data/GOOG.csv', 'data/GOOGL.csv', 'data/JPM.csv', 'data/MSFT.csv', 'data/NVDA.csv', 'data/TSLA.csv', 'data/VOO.csv']
+
+Testing files: 
+['data/AAPL.csv']
+--------------------------------------------------------------------------------
+Data info:                              Training info:                          
+--------------------------------------------------------------------------------
+Features:                     5         Learning rate:                1e-05     
+Sequence Length:              21        Epochs:                       512       
+Batch Size:                   64        Device:                       CUDA      
+Output:                       2         Hidden cells:                 70        
+--------------------------------------------------------------------------------
+
+Initializing model...
+Model initialized! (0.8303 seconds )
+
+Loading training dataset...
+Training dataset loaded! (0.1538 seconds )
+
+Training...
+
+Training finished! (347.4396 seconds )
+
+Loading test dataset...
+Test dataset loaded! (0.0028 seconds )
+
+Testing...
+
+Testing finished! (0.0026 seconds )
+
+The mean percentual deviation from targets of this model is 1.4399793645749719%
+
+Test dataset last 30 days:
+--------------------------------------------------------------------------------
+Actual high         Actual Low          Predicted high      Predicted low       
