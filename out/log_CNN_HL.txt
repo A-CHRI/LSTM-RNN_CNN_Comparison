@@ -18,23 +18,23 @@ Output:                       2         Hidden cells:                 70
 --------------------------------------------------------------------------------
 
 Initializing model...
-Model initialized! (0.8303 seconds )
+Model initialized! (0.8146 seconds )
 
 Loading training dataset...
-Training dataset loaded! (0.1538 seconds )
+Training dataset loaded! (0.1554 seconds )
 
 Training...
 
-Training finished! (347.4396 seconds )
+Training finished! (585.8192 seconds )
 
 Loading test dataset...
 Test dataset loaded! (0.0028 seconds )
 
 Testing...
 
-Testing finished! (0.0026 seconds )
+Testing finished! (0.0037 seconds )
 
-The mean percentual deviation from targets of this model is 1.4399793645749719%
+The mean percentual deviation from targets of this model is 1.4421757379853395%
 
 Test dataset last 30 days:
 --------------------------------------------------------------------------------

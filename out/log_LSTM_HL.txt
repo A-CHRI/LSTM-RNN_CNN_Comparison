@@ -4,7 +4,7 @@
 Files:                                                                          
 --------------------------------------------------------------------------------
 Training files: 
-['data/TSLA.csv', 'data/GME.csv', 'data/VOO.csv', 'data/AMD.csv']
+['data/AMZN.csv', 'data/BRK.csv', 'data/FB.csv', 'data/GOOG.csv', 'data/GOOGL.csv', 'data/JPM.csv', 'data/MSFT.csv', 'data/NVDA.csv', 'data/TSLA.csv', 'data/VOO.csv']
 
 Testing files: 
 ['data/AAPL.csv']
@@ -12,12 +12,29 @@ Testing files:
 Data info:                              Training info:                          
 --------------------------------------------------------------------------------
 Features:                     5         Learning rate:                0.0025    
-Sequence Length:              21        Epochs:                       512       
+Sequence Length:              21        Epochs:                       2         
 Batch Size:                   64        Device:                       CUDA      
 Output:                       2         Hidden cells:                 70        
 --------------------------------------------------------------------------------
 
 Initializing model...
-Model initialized! (1.3773 seconds )
+Model initialized! (2.6097 seconds )
 
 Loading training dataset...
+Training dataset loaded! (0.1754 seconds )
+
+Training...
+
+Training finished! (4.9945 seconds )
+
+Loading test dataset...
+Test dataset loaded! (0.0185 seconds )
+
+Testing...
+
+Testing finished! (0.0836 seconds )
+The mean percentual deviation from targets of this model is 5.1685475491596%
+
+Test dataset last 30 days:
+--------------------------------------------------------------------------------
+Actual high         Actual Low          Predicted high      Predicted low       

@@ -217,7 +217,7 @@ if __name__ == '__main__':
     print_and_log("\nTest dataset last 30 days:" + "\n" + "-"*80)
     print_and_log(f"{'Actual Close':<20}{'Predicted Close':<20}")
     for i, e in enumerate(plot_data_30):
-        print(f"{round(e, 4):<20}{round(pred_data_30[i][0], 4):<20}")
+        print_and_log(f"{round(e, 4):<20}{round(pred_data_30[i][0], 4):<20}")
 
 
     ### Plotting ###
