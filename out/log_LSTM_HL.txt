@@ -12,29 +12,59 @@ Testing files:
 Data info:                              Training info:                          
 --------------------------------------------------------------------------------
 Features:                     5         Learning rate:                0.0025    
-Sequence Length:              21        Epochs:                       2         
+Sequence Length:              21        Epochs:                       512       
 Batch Size:                   64        Device:                       CUDA      
 Output:                       2         Hidden cells:                 70        
 --------------------------------------------------------------------------------
 
 Initializing model...
-Model initialized! (2.6097 seconds )
+Model initialized! (2.1655 seconds )
 
 Loading training dataset...
-Training dataset loaded! (0.1754 seconds )
+Training dataset loaded! (0.3808 seconds )
 
 Training...
 
-Training finished! (4.9945 seconds )
+Training finished! (835.4208 seconds )
 
 Loading test dataset...
-Test dataset loaded! (0.0185 seconds )
+Test dataset loaded! (0.0331 seconds )
 
 Testing...
 
-Testing finished! (0.0836 seconds )
-The mean percentual deviation from targets of this model is 5.1685475491596%
+Testing finished! (0.0768 seconds )
+The mean percentual deviation from targets of this model is 2.719597924946481%
 
 Test dataset last 30 days:
 --------------------------------------------------------------------------------
 Actual high         Actual Low          Predicted high      Predicted low       
+164.96              159.72              168.7325            164.4618            
+167.8799            164.28              163.5703            159.768             
+171.58              168.34              165.2361            162.6361            
+175.96              170.7               169.4181            163.9423            
+176.75              173.92              170.1243            167.4393            
+179.63              174.69              179.6673            175.1321            
+182.13              175.53              176.4364            171.452             
+177.74              172.21              182.0588            177.3229            
+179.5               172.3108            182.5649            178.6711            
+181.14              170.75              179.2724            174.4747            
+173.47              169.69              180.3454            176.9545            
+170.58              167.46              179.7336            175.2153            
+173.2               169.12              176.3173            171.0361            
+175.86              172.15              173.4921            169.0548            
+176.8499            175.27              178.5555            173.7316            
+180.42              177.07              178.7803            174.8971            
+181.33              178.53              178.9059            174.6751            
+180.63              178.14              183.8906            179.999             
+180.57              178.09              183.3592            180.2724            
+179.23              177.26              180.4003            177.3318            
+182.88              177.71              181.0645            177.3668            
+182.94              179.12              181.0968            178.1184            
+180.17              174.64              185.5987            182.5012            
+175.3               171.64              185.5489            181.9946            
+174.14              171.03              182.2161            178.6098            
+172.5               168.17              177.6151            173.6822            
+175.18              170.82              178.4427            175.3895            
+177.18              174.82              173.8635            169.3712            
+176.62              171.79              178.0171            175.0024            
+173.78              171.09              179.8606            176.4215            

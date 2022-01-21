@@ -1,10 +1,10 @@
 import numpy as np
 
-data = np.loadtxt("out/experiment_data_CNN.txt")
+data = np.loadtxt("out/CNN.txt")
 
 print(np.std(data))
 
-data = np.loadtxt("out/experiment_data_LSTM.txt")
+data = np.loadtxt("out/LSTM.txt")
 
 print(np.std(data))
 
